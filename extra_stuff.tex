@@ -12,6 +12,7 @@
 \usepackage{color}
 
 \definecolor{keywordcolor}{rgb}{0,0.4,0.7}
+\definecolor{numbercolor}{rgb}{0.8,0.3,0}
 \definecolor{commentcolor}{rgb}{0.4,0.4,0.4} 	
 \definecolor{mygray}{rgb}{0.5,0.5,0.5} 	% line counter color
 \definecolor{mymauve}{rgb}{0.55,0.28,0.62}	% string color
@@ -53,7 +54,7 @@
 \newtoggle{InString}{}% Keep track of if we are within a string
 \togglefalse{InString}% Assume not initally in string
 
-\newcommand*{\ColorIfNotInString}[1]{\iftoggle{InString}{#1}{\color{blue}#1}}%
+\newcommand*{\ColorIfNotInString}[1]{\iftoggle{InString}{#1}{\color{numbercolor}#1}}%
 \newcommand*{\ProcessQuote}[1]{#1\iftoggle{InString}{\global\togglefalse{InString}}{\global\toggletrue{InString}}}%
 \lstset{literate=%
     {"}{{{\ProcessQuote{"}}}}1% Disable coloring within double quotes

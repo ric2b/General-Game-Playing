@@ -1,10 +1,30 @@
 \chapter{State of the Art}
 \label{chapter:state_of_the_art}
 
-\section{Competition}
+\section{Early attempts at multi-game playing}
+
+
+
+\subsection{Hoyle}
+A system developed in the 90’s, using a training scheme called lesson and practice, where lessons are games played against an expert and practice is self-playing. Predates GDP and was developed for 2-player games. The system used a set of game independent Advisers, each specialized in a game aspect such as position. These Advisers could recommend moves that could then be chosen by higher tier advisers. There were 3-tiers, depending on specialization:
+
+\begin{enumerate}
+
+\item [1st.] These Advisers specialized in immediate consequences: they performed very shallow searches to avoid things like instant loss moves. These decisions were final.
+
+\item [2nd.] Advisers in this tier chose moves according to certain goals. These decisions were also final.
+
+\item [3rd.] Advisers in the last tier differed from the first tiers in an important way: The decision of each Adviser wasn’t final, the final decision was decided by a process similar to taking a vote between the Advisers in this 3rd tier. Advisers votes were weighted in accordance to the lesson and practice results: Advisers that were more often correct during the training stage received bigger weights. 
+
+\end{enumerate}
+This process of weighting the Advisers was crucial to the performance of the system and could even be worse than a random player if done incorrectly. If none of the 3rd tier advisers were even remotely related to the game being played the results would also be disappointing. Having a varied pool of Advisers was for this reason vital but they were never, by definition, general enough. Hoyle was tested in 18 two-player board games, its potential in complex games was never verified.
+
+\section{Competition as a benchmark}
 The General Game Playing annual competition has been, since its creation in 2005 in Stanford University, the way to know which methods are the state of the art. 
 While in the early years of the competition there was a bigger focus on intelligent heuristics, Monte Carlo Tree Search (MCTS) has dominated the competition ever since, since it’s domain independent (general), inherently parallel and has shown better performance in most of the tested games. One of the most important features of MCTS is that the process of building the tree can be paused when necessary (for example when a turn ends) and continued at a later time. This allows a player to continue the simulations throughout the whole game, without restarting after each turn.
 The variant of MCTS commonly used in GGP is called Upper Confidence Bounds Applied for Trees (UCT), which provides a simple method to balance tree exploration (search new branches) and exploitation (search deeper in the known branches). 
+
+There are other, smaller, \gls{GGP} competitions that usually have the same results in terms of what techniques tend to perform best.
 
 \section{Techniques}
 \subsection{Monte Carlo Tree Search}
@@ -55,19 +75,7 @@ There have been several suggested improvements to the basic MCTS, although most 
 \section{AI-Based Techniques}
 Although currently not competitive with MCTS, there are several different approaches more similar to classical AI. Some of these are attempts at multi-game playing that predate GGP. These are techniques that try to learn or identify features of the game. One of the biggest drawbacks of this type of technique is that no general heuristic exists, meaning heuristics have to be discovered at run time, which is a very complex problem. 
 
-\subsection{Hoyle}
-A system developed in the 90’s, using a training scheme called lesson and practice, where lessons are games played against an expert and practice is self-playing. Predates GDP and was developed for 2-player games. The system used a set of game independent Advisers, each specialized in a game aspect such as position. These Advisers could recommend moves that could then be chosen by higher tier advisers. There were 3-tiers, depending on specialization:
 
-\begin{enumerate}
-
-\item [1st.] These Advisers specialized in immediate consequences: they performed very shallow searches to avoid things like instant loss moves. These decisions were final.
-
-\item [2nd.] Advisers in this tier chose moves according to certain goals. These decisions were also final.
-
-\item [3rd.] Advisers in the last tier differed from the first tiers in an important way: The decision of each Adviser wasn’t final, the final decision was decided by a process similar to taking a vote between the Advisers in this 3rd tier. Advisers votes were weighted in accordance to the lesson and practice results: Advisers that were more often correct during the training stage received bigger weights. 
-
-\end{enumerate}
-This process of weighting the Advisers was crucial to the performance of the system and could even be worse than a random player if done incorrectly. If none of the 3rd tier advisers were even remotely related to the game being played the results would also be disappointing. Having a varied pool of Advisers was for this reason vital but they were never, by definition, general enough. Hoyle was tested in 18 two-player board games, its potential in complex games was never verified.
 
 \subsection{FluxPlayer}
 The winner of the second GGP competition, in 2006, this player used fuzzy logic to determine how close to terminal a certain state is.
