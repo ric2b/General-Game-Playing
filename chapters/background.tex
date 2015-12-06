@@ -1,0 +1,56 @@
+%TEX root = ../dissertation.tex
+
+\chapter{Background}
+\label{chapter:background}
+
+\section{Early attempts at multi-game playing}
+
+
+\section{The basics of a GGP match}
+
+A \gls{GGP} match consists of 3 major components:
+\begin{itemize}
+\item Game Description: The game rules, in \gls{GDL}.
+
+\item Game Manager: This system acts as a referee and manages communication with the players and other systems like graphics for the spectators. \textit{State Data} is usually part of the Game Manager.
+
+\item Players: Players are the most interesting component of a \gls{GGP} game, they need.
+
+\end{itemize}
+
+\begin{figure}[h]
+	\centering
+    \includegraphics[scale=0.8]{images/GGPgamesetup.png}
+    \caption{Match Components}
+    \label{fig:match components}
+\end{figure}
+
+At the beginning of a match, the Game Manager sends all Players a match identifier, the game description, the role of each player and the time limits (for preparation (\textit{startclock}) and for each round (\textit{playclock})).
+
+The match commences, after all players respond, with the Game Manager requesting a move from all players. Each round ends when all players send their moves or the time limit runs out (a random legal move is chosen for players that don't respond in time), after which the Game Manager will send each player another request along with all moves taken in the previous round.
+
+
+\subsection{Game Description Language}
+The \gls{GDL} is the standard way of describing games in the \gls{GGP} community.
+\gls{GGP} players interpret the language using something called a \textit{Reasoner}. Choosing a good way of interpreting the game rules is one of the keys to performance and so many players develop their own custom \textit{reasoners}.
+
+It can describe any finite deterministic move-based strategy game with an arbitrary number of players (most board games). GDL-II is an extension that has been made to allow for probabilistic games and incomplete information, like most card games.
+
+Both GDL and GDL-II are variants of Datalog (query and rule language similar to prolog) and use first order logic.
+Since GDL is a very conceptual description of the rules their interpretation is very computationally expensive. Choosing a good way of doing this interpretation (components that do this are called reasoners) is therefore very important to player performance, even in the recent years.
+
+\subsection{Game Manager}
+The purpose of the Game Manager is to be a single source of truth about what's happening in a match, and verify all moves taken by players. It must be able to interpret \gls{GDL}, to verify these moves
+
+Players communicate their moves to the Game Manager (via HTTP), who checks the validity of the moves. A random legal move is chosen if a player chooses an illegal move or doesn't respond in time.
+
+It should also provide a way of archiving the match history (all game states and moves taken) and other useful features like an interface for spectating.
+
+\subsection{Game Player}
+Game Players are systems that can interpret a \gls{GDL} game description, communicate with the Game Manager and devise strategies, to maximize their result in a certain game.
+
+Game Players are, of course, the most interesting part of any \gls{GGP} match. Their aim is to be as general as possible while also having reasonably good performance in any game, which is a surprisingly difficult feat. Suffice it to say, sophisticated AI techniques like heuristics are very hard to successfully apply in a general, domain independent, way. So far, 
+The most relevant techniques are discussed in chapter \ref{chapter:state_of_the_art}.
+
+
+

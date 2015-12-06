@@ -1,0 +1,91 @@
+\chapter{State of the Art}
+\label{chapter:state_of_the_art}
+
+\section{Competition}
+The General Game Playing annual competition has been, since its creation in 2005 in Stanford University, the way to know which methods are the state of the art. 
+While in the early years of the competition there was a bigger focus on intelligent heuristics, Monte Carlo Tree Search (MCTS) has dominated the competition ever since, since it’s domain independent (general), inherently parallel and has shown better performance in most of the tested games. One of the most important features of MCTS is that the process of building the tree can be paused when necessary (for example when a turn ends) and continued at a later time. This allows a player to continue the simulations throughout the whole game, without restarting after each turn.
+The variant of MCTS commonly used in GGP is called Upper Confidence Bounds Applied for Trees (UCT), which provides a simple method to balance tree exploration (search new branches) and exploitation (search deeper in the known branches). 
+
+\section{Techniques}
+\subsection{Monte Carlo Tree Search}
+Introduced to the GGP competition by CADIA player in 2007, It’s currently the most used and successful method in GGP. Starting from the current state, the algorithm traverses the tree until the move timer ends, doing as many iterations as possible.
+
+Each iteration has four steps: selection, expansion, simulation and back propagation:
+
+\begin{enumerate}
+
+\item Selection: Some technique is used to select which already traversed node to start from for a search. The most common technique is Upper Confidence Bounds applied for Trees (UCT), which includes a constant that can be tweaked to favor more or less exploration of non visited branches. The UCT algorithm is described in \ref{UCT}:
+
+\begin{center}
+\begin{equation} \label{UCT}
+a^{*} = arg \max_{a\in A(s)} \left \{ Q(s,a) + C \sqrt{\frac{\ln|N(s)|} {N(s,a)}} \right \}
+\end{equation}
+\end{center}
+
+Where $a^{*}$ is the selected node, $a \in A(s)$ means an action that contained in the set of possible actions in the current state $s$, $Q(s,a)$ is an assessment of performing $a$ in state $s$, $C$ is the exploration ratio constant, $N(s)$ is the number of previous visits to state $s$ and $N(s,a)$ is the number of times $a$ has been sampled in state $s$.
+
+\item Expansion: Adding a node with the first unvisited state yet to the tree, meaning a state that wasn’t already in the tree.
+
+\item Simulation: Perform a random simulation until a terminal game state is reached.
+
+\item Back-Propagation: The scores obtained by all players at the end of the simulation are back-propagated to all nodes traveled in the selection and expansion stages.
+
+\end{enumerate}
+
+The success of MCTS can be mostly attributed to it not requiring any game-specific knowledge, although this can become a problem if other techniques like heuristics become advanced enough at learning important features of games, as heuristic search can be much faster than simulation. MCTS also has the advantage of parallelizing well. The biggest problems for MCTS are games that can have infinite moves without ending and tree size.
+
+There have been several suggested improvements to the basic MCTS, although most aren’t very thoroughly tested yet. One of the most interesting ones is Simulation Heuristics, proposed by MINI-Player, which aims to add some sort of learning to the standard MCTS algorithm. The heuristics proposed are very light-weight and are the following:
+
+\begin{itemize}
+
+\item Random: The standard MCTS
+
+\item History Heuristic: Tries to identify globally good actions (generally good regardless of state)
+
+\item Mobility: Favors actions that lead to states with more move options relatively to other players.
+
+\item Approximate Goal Evaluation: Tries to calculate the degree of satisfaction of a GDL goal rule. 
+
+\item Exploration: Measures the difference between states as a way to do a diverse exploration. 
+
+\item Statistical Symbol Counting: Before the start clock simulations are done to calculate the correlation between game score and certain game symbols (moves, pieces, board locations, etc). Symbols that do not change much are then ignored to allow more computation to be made on the more relevant ones.
+
+\end{itemize}
+
+\section{AI-Based Techniques}
+Although currently not competitive with MCTS, there are several different approaches more similar to classical AI. Some of these are attempts at multi-game playing that predate GGP. These are techniques that try to learn or identify features of the game. One of the biggest drawbacks of this type of technique is that no general heuristic exists, meaning heuristics have to be discovered at run time, which is a very complex problem. 
+
+\subsection{Hoyle}
+A system developed in the 90’s, using a training scheme called lesson and practice, where lessons are games played against an expert and practice is self-playing. Predates GDP and was developed for 2-player games. The system used a set of game independent Advisers, each specialized in a game aspect such as position. These Advisers could recommend moves that could then be chosen by higher tier advisers. There were 3-tiers, depending on specialization:
+
+\begin{enumerate}
+
+\item [1st.] These Advisers specialized in immediate consequences: they performed very shallow searches to avoid things like instant loss moves. These decisions were final.
+
+\item [2nd.] Advisers in this tier chose moves according to certain goals. These decisions were also final.
+
+\item [3rd.] Advisers in the last tier differed from the first tiers in an important way: The decision of each Adviser wasn’t final, the final decision was decided by a process similar to taking a vote between the Advisers in this 3rd tier. Advisers votes were weighted in accordance to the lesson and practice results: Advisers that were more often correct during the training stage received bigger weights. 
+
+\end{enumerate}
+This process of weighting the Advisers was crucial to the performance of the system and could even be worse than a random player if done incorrectly. If none of the 3rd tier advisers were even remotely related to the game being played the results would also be disappointing. Having a varied pool of Advisers was for this reason vital but they were never, by definition, general enough. Hoyle was tested in 18 two-player board games, its potential in complex games was never verified.
+
+\subsection{FluxPlayer}
+The winner of the second GGP competition, in 2006, this player used fuzzy logic to determine how close to terminal a certain state is.
+
+Fuzzy logic is a form of logic that allows multiple different values beyond True or False, and also allows overlap between these values. For example: water can be considered cold, warm or hot, but also warm and hot at the same time, since for some temperatures it is not clear which one is the correct one. Fuzzy logic also allows each of these states to have varying degrees of certainty: the water can be 80\% warm and 10\% cold, allowing conditions like if water is very warm: add some cold water, where the very keyword is also part of the fuzzy logic implementation.
+
+The system also used a novel heuristic search that could be computed from the specifications of the game.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
