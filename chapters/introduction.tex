@@ -3,6 +3,8 @@
 \chapter{Introduction}
 \label{chapter:introduction}
 
+\section{Motivation}
+
 Game playing has always been a fundamental part of Artificial Intelligence (AI) research, as it can be used to test strategy in a straightforward way. Different games can be created to test specific features or properties that are of research interest, such as opponent modeling.
 
 Throughout the history of AI research there was always a big focus on the ability of playing specific games, like chess, well. This focus led to systems like Deep Blue (the computer system that defeated Garry Kasparov at chess in the 90’s) that, while very advanced on the games they are designed for, delegate all the interesting analysis to the system designers. These systems are also completely useless for all games other than the one they were designed for (even if the difference is very small).
@@ -11,8 +13,53 @@ This over-specialization limits the usefulness of these systems. It is then of o
 
 \chapquote{``A human being should be able to (...) design a building, write a sonnet, balance accounts, build a wall, set a bone, comfort the dying, take orders, give orders, cooperate, act alone, solve equations, analyze a problem, pitch manure, program a computer, fight efficiently, die gallantly. \\ Specialization is for insects.''}{Robert A. Heinlein}{Time Enough for Love}
 
-\gls{GGP} aims to develop general game playing systems, systems that can play any game when given the rules, acting as a stepping stone for General Intelligence research. Artificial General Intelligence has been a topic for science-fiction stories and, if possible, can be the biggest revolution in human history, allowing for an unprecedented ability of problem-solving.p
+\gls{GGP} aims to develop general game playing systems, systems that can play any game when given the rules, acting as a stepping stone for General Intelligence research. Artificial General Intelligence has been a topic for science-fiction stories and, if possible, can be the biggest revolution in human history, allowing for an unprecedented ability of problem-solving.
  
+\section{Multi-game playing} 
+ 
+\subsection{Early attempts at multi-game playing}
+
+Write some more here...
+
+\subsubsection{Hoyle}
+A system developed in the 90’s, using a training scheme called lesson and practice, where lessons are games played against an expert and practice is self-playing. Predates GDP and was developed for 2-player games. The system used a set of game independent Advisers, each specialized in a game aspect such as position. These Advisers could recommend moves that could then be chosen by higher tier advisers. There were 3-tiers, depending on specialization:
+
+\begin{enumerate}
+
+\item [1st.] These Advisers specialized in immediate consequences: they performed very shallow searches to avoid things like instant loss moves. These decisions were final.
+
+\item [2nd.] Advisers in this tier chose moves according to certain goals. These decisions were also final.
+
+\item [3rd.] Advisers in the last tier differed from the first tiers in an important way: The decision of each Adviser wasn’t final, the final decision was decided by a process similar to taking a vote between the Advisers in this 3rd tier. Advisers votes were weighted in accordance to the lesson and practice results: Advisers that were more often correct during the training stage received bigger weights. 
+
+\end{enumerate}
+This process of weighting the Advisers was crucial to the performance of the system and could even be worse than a random player if done incorrectly. If none of the 3rd tier advisers were even remotely related to the game being played the results would also be disappointing. Having a varied pool of Advisers was for this reason vital but they were never, by definition, general enough to be useful for any game. Hoyle was tested in 18 two-player board games, its potential in complex games was never verified.
+
+\subsection{General Game Playing}
+Hi
+
+
+\section{Objectives}
+
+\paragraph{Main Objectives:}
+\begin{itemize}
+\item Research and compare current techniques and solutions for GGP players 
+\item Improve or develop new techniques for game playing
+\item Use the improvements to make a new GGP player
+\item Benchmark the player against other existing GGP players
+\end{itemize}
+
+\paragraph{Secondary Objectives:}
+\begin{itemize}
+\item Publish the results
+\item Enter the annual GGP competition
+\item Enter other relevant competitions
+\end{itemize}
+
+
+
+
+\section{Planning}
 
 % A demonstration of how to use acronyms and glossary:
 
