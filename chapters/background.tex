@@ -120,13 +120,45 @@ The Game Planner is the biggest factor for system performance, as it is both the
 
 The currently most relevant solutions for both Game Planning and GDL interpretation are discussed in chapter \ref{chapter:state_of_the_art}.
 
-\subsection{Player performance measurement}
+\subsection{Performance measurement}
+
 
 
 \section{GDL Interpreter Techniques}
+A \gls{GDL} description by itself isn't sufficient to know what actions are possible at each game state, such features must be deduced from the game rules. 
+There are two main ways of dealing with this:
+Interpreting the rules whenever necessary or converting the game rules to an efficient data structure. The first solution is generally simpler to implement but has sub-par performance. There are, of course, various possible data structures to store the game rules, only one is explored here, \textit{propositional networks}, as it has become very popular in recent works.
+
+
 \subsection{Propositional networks}
 
-Fill this in
+Propositional networks are bidirectional graphs similar to simple logic circuits.
+This representation has 2 main benefits: compactness and simplified game analysis.
+The compactness comes from the fact that the number of represented states can be exponential to the number of propositions, $n$ propositions can represent $2^{n}$ states, being much more compact than a state machine.
+The simplified analysis comes from the fact that it becomes simpler to recognize things like symmetries, dead states, composite games (a game composed of multiple games that don't affect each other) and other properties.
+
+Propositional networks exploit the fact that, in the vast majority of games, there is limited influence to each action: each game symbol is affected only by a few other symbols, not all of them. For example, moving a pawn in Chess only changes the position of the moved pawn and perhaps an opponents piece is taken, the remaining pieces keep their previous state.
+
+The components of a basic propositional network can be seen in \ref{fig:propnets components}. 
+
+\begin{figure}[h]
+	\centering
+    \includegraphics[scale=0.45]{images/propnets_components.png}
+    \caption{Basic components of propositional networks}
+    \label{fig:propnets components}
+\end{figure}
+
+Propositions are boolean valued and can represent things like action legality, if a piece is in a certain location, etc. A proposition is an \textit{input} if it's value is independent of the rest of the network and a \textit{view} if it's the result of a connective. 
+Connectives are transformations applied to propositions and be a transition or one of the 3 basic logic functions: \textit{and, or} or \textit{not}. A transition acts similarly to a register, its output does not changes until the game moves to the next state. A \textit{view} after a transition is called a \textit{base}. 
+
+A simple example of a propositional network can be seen in \ref{fig:propnets example}.
+
+\begin{figure}[h]
+	\centering
+    \includegraphics[scale=0.45]{images/propnets_example.png}
+    \caption{Example of a propositional network with 2 inputs and 1 transition}
+    \label{fig:propnets example}
+\end{figure}
 
 
 \section{Game Planner Techniques}
