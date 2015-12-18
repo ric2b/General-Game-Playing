@@ -53,9 +53,33 @@ Game Players are systems that can interpret a \gls{GDL} game description, commun
 Their aim is to be as general as possible while also having reasonably good performance in any game, which is a surprisingly difficult feat. Suffice it to say, sophisticated AI techniques like heuristics are very hard to successfully apply in a general, domain independent, way. 
 
 \section{Markov Decision Problem}
-The \gls{MDP} is a way of mathematically modeling decision making and can help to formalise the
+The \gls{MDP} provides a way of mathematically modeling decision making and can help to formalize the task of GGP Players.
+In short, a Markov Decision Process is composed of 5 components:
 
+\begin{itemize}
+\item States - $S$ : The set of all possible states of the problem. 
 
+\item Actions - $A(s)$ : The set of possible actions in state $s$.
+
+\item Model - $T(s, a, s') \sim Pr(s' | s, a)$ : The laws of the universe in which the problem is contained. In other words, what is the outcome (state $s'$) of taking an action $a$ in state $s$. The model can be deterministic or stochastic ($Pr(s' | s, a)$), where multiple outcomes are possible.
+
+\item Reward - $R(s, a, s')$ : What is the reward of taking action $a$ in state $s$ and transitioning to state $s'$. 
+
+\item Discount Factor - $\gamma$ : Reduces the importance of distant rewards. It's important in the common case of a stochastic problem, since distant rewards may become unreachable due to external influence.
+\end{itemize}
+
+A policy, $\pi$, defines what action $\pi(s)$ the agent will take when in state $s$. Policies are solutions to \gls{MDP}'s. 
+
+In the domain of General Game Playing each different match has it's own \gls{MDP}, since the Model is defined not only by the game rules but also by the behavior of other players. Rewards and discount factors are also not solely dependent on the game rules (is it always a good move to take a Knight in chess?). 
+Most GGP matches have, therefore, unknown rewards and probabilities, making them reinforcement learning problems. In these problems it is useful to define the funcion $Q(s,a)$, given by \ref{Q(s,a)}, and is an assessment of the quality of taking action $a$ in state $s$. $V(s)$ is the discounted sum of the rewards to be earned (on average) by following that solution from state $s$.
+
+\begin{center}
+\begin{equation} \label{Q(s,a)}
+Q(s,a) = \sum_{s'} P(s' | s, a)(R(s, a, s') + \gamma V(s'))
+\end{equation}
+\end{center}
+
+$V(s')$ is the discounted sum of the rewards to be earned (on average) by following that solution from state $s'$.
 
 \section{Basics of a GDL player}
 
@@ -129,6 +153,6 @@ There have been several suggested improvements to the basic MCTS, although most 
 
 \end{itemize}
 
-\subsection{AI-Based Techniques}
+\subsection{Heuristics}
 Although currently not competitive with MCTS, there are several different approaches more similar to classical AI. Some of these are attempts at multi-game playing that predate GGP. These are techniques that try to learn or identify features of the game. One of the biggest drawbacks of this type of technique is that no general heuristic exists, meaning heuristics have to be discovered at run time, which is a very complex problem.
 
