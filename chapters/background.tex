@@ -49,14 +49,39 @@ Players communicate their moves to the Game Manager (via HTTP), who checks the v
 It should also provide a way of archiving the match history (all game states and moves taken) and other useful features like an interface for spectating.
 
 \subsection{Game Player}
-Game Players are systems that can interpret a \gls{GDL} game description, communicate with the Game Manager and devise strategies, to maximize their result in a certain game.
+Game Players are systems that can interpret a \gls{GDL} game description, communicate with the Game Manager and devise strategies to maximize their result in a certain game.
+Their aim is to be as general as possible while also having reasonably good performance in any game, which is a surprisingly difficult feat. Suffice it to say, sophisticated AI techniques like heuristics are very hard to successfully apply in a general, domain independent, way. 
 
-Game Players are, of course, the most interesting part of any \gls{GGP} match. Their aim is to be as general as possible while also having reasonably good performance in any game, which is a surprisingly difficult feat. Suffice it to say, sophisticated AI techniques like heuristics are very hard to successfully apply in a general, domain independent, way. So far, 
-The most relevant techniques are discussed in chapter \ref{chapter:state_of_the_art}.
+\section{Markov Decision Problem}
+The \gls{MDP} is a way of mathematically modeling decision making and can help to formalise the
 
-\section{Player components}
 
-\subsection{Markov Decision Problem}
+
+\section{Basics of a GDL player}
+
+A simplified example of a GGP Player architecture can be seen in figure \ref{fig:player architecture}. As seen in the figure, the player must have some form of these components:
+
+\begin{itemize}
+\item HTTP Server: Interfaces with the Game Master
+
+\item \gls{GDL} Interpreter: Analyses the game rules, in some cases changing their representation into a more efficient data structure 
+
+\item Game State: Holds any relevant information about the game, like the current state or past moves by opponents (to maybe model their strategy)
+
+\item Game Planner: Attempts to choose the best action for the current state of the game. If it uses simulations as part of its operation (very common) it may interface with the \gls{GDL} Interpreter to discover what actions are available in each of the simulated states.
+\end{itemize}
+
+\begin{figure}[h]
+	\centering
+    \includegraphics[scale=0.8]{images/GGPplayer.png}
+    \caption{Simplified example of a GGP Player architecture}
+    \label{fig:player architecture}
+\end{figure}
+
+The Game Planner is the biggest factor for system performance, as it is both the component that chooses the strategy and the one that requires the most computing power. The GDL Interpreter can also affect performance in a smaller but relevant way by using a significant portion of the computational power of the system. It becomes more important as more simulations are needed. 
+
+The currently most relevant solutions for both Game Planning and GDL interpretation are discussed in chapter \ref{chapter:state_of_the_art}.
+
 
 \section{Techniques}
 \subsection{Monte Carlo Tree Search}
