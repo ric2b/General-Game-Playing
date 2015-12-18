@@ -71,15 +71,29 @@ In short, a Markov Decision Process is composed of 5 components:
 A policy, $\pi$, defines what action $\pi(s)$ the agent will take when in state $s$. Policies are solutions to \gls{MDP}'s. 
 
 In the domain of General Game Playing each different match has it's own \gls{MDP}, since the Model is defined not only by the game rules but also by the behavior of other players. Rewards and discount factors are also not solely dependent on the game rules (is it always a good move to take a Knight in chess?). 
-Most GGP matches have, therefore, unknown rewards and probabilities, making them reinforcement learning problems. In these problems it is useful to define the funcion $Q(s,a)$, given by \ref{Q(s,a)}, and is an assessment of the quality of taking action $a$ in state $s$. $V(s)$ is the discounted sum of the rewards to be earned (on average) by following that solution from state $s$.
+Most GGP matches have, therefore, unknown rewards and probabilities from the point of view of the player, making them \textit{reinforcement learning} problems. In these problems it is useful to define the function $Q(s,a)$, given by \ref{Q(s,a)}, and is an assessment of the quality of taking action $a$ in state $s$.
 
 \begin{center}
 \begin{equation} \label{Q(s,a)}
-Q(s,a) = \sum_{s'} P(s' | s, a)(R(s, a, s') + \gamma V(s'))
+Q(s,a) = \sum_{s'} Pr(s' | s, a)(R(s, a, s') + \gamma V(s'))
 \end{equation}
 \end{center}
 
-$V(s')$ is the discounted sum of the rewards to be earned (on average) by following that solution from state $s'$.
+$V(s')$ is the value of being in state $s'$, the discounted sum of the expected rewards to be earned (on average) by following the policy from state $s'$ on-wards. There are several ways to implement this calculation.
+
+If all the probabilities and rewards are known the policy can be solved recursively according to \ref{pi(s)} and \ref{V(s)}.
+
+\begin{center}
+\begin{equation} \label{pi(s)}
+\pi(s) \equiv arg max_{a}\left \{ \sum_{s'} Pr(s' | s, a)(R(s, a, s') + \gamma V(s'))\right \}
+\end{equation}
+\end{center}
+
+\begin{center}
+\begin{equation} \label{V(s)}
+V(s) \equiv \sum_{s'} Pr(s' | s, \pi(s))(R(s, \pi(s), s') + \gamma V(s'))
+\end{equation}
+\end{center}
 
 \section{Basics of a GDL player}
 
@@ -106,8 +120,16 @@ The Game Planner is the biggest factor for system performance, as it is both the
 
 The currently most relevant solutions for both Game Planning and GDL interpretation are discussed in chapter \ref{chapter:state_of_the_art}.
 
+\subsection{Player performance measurement}
 
-\section{Techniques}
+
+\section{GDL Interpreter Techniques}
+\subsection{Propositional networks}
+
+Fill this in
+
+
+\section{Game Planner Techniques}
 \subsection{Monte Carlo Tree Search}
 Introduced to the GGP competition by CADIA player in 2007, It’s currently the most used and successful method in GGP. Starting from the current state, the algorithm traverses the tree until the move timer ends, doing as many iterations as possible.
 
@@ -129,7 +151,7 @@ Where $a^{*}$ is the selected node, $a \in A(s)$ means an action that contained 
 
 \item Simulation: Perform a random simulation until a terminal game state is reached.
 
-\item Back-Propagation: The scores obtained by all players at the end of the simulation are back-propagated to all nodes traveled in the selection and expansion stages.
+\item Back-Propagation: The scores obtained by all players at the end of the simulation are back-propagated to all nodes traveled in the selection and expansion stages. This is how the rewards of non-terminal states is computed.
 
 \end{enumerate}
 
@@ -154,5 +176,12 @@ There have been several suggested improvements to the basic MCTS, although most 
 \end{itemize}
 
 \subsection{Heuristics}
-Although currently not competitive with MCTS, there are several different approaches more similar to classical AI. Some of these are attempts at multi-game playing that predate GGP. These are techniques that try to learn or identify features of the game. One of the biggest drawbacks of this type of technique is that no general heuristic exists, meaning heuristics have to be discovered at run time, which is a very complex problem.
+Heuristics are methods that simplify or accelerate problem solving by not guaranteeing optimal solutions but satisfying approximations. Heuristics can be very useful whenever finding an optimal solution is impossible or impractical.
 
+In the case of \gls{GGP} these techniques try to learn or identify features of the game, so the player can more efficiently evaluate the quality of the available actions. One of the biggest drawbacks of this type of technique is that heuristics become less useful the more general they become, meaning that, ideally, specialized heuristics should be created at run time, which is a very complex problem.
+
+Although currently not competitive with \gls{MCTS} on their own, heuristic techniques are used to try to improve \gls{MCTS}.
+
+There have been, however, some Heuristic based techniques to \gls{GGP} that don't use \gls{MCTS}.
+
+\subsection{Fill this in}
