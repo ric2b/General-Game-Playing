@@ -102,11 +102,11 @@ A simplified example of a GGP Player architecture can be seen in figure \ref{fig
 \begin{itemize}
 \item HTTP Server: Interfaces with the Game Master
 
-\item \gls{GDL} Interpreter: Analyses the game rules, in some cases changing their representation into a more efficient data structure 
+\item \gls{GDL} Interpreter (also known as \textit{Reasoner}): Analyses the game rules, in some cases changing their representation into a more efficient data structure 
 
 \item Game State: Holds any relevant information about the game, like the current state or past moves by opponents (to maybe model their strategy)
 
-\item Game Planner: Attempts to choose the best action for the current state of the game. If it uses simulations as part of its operation (very common) it may interface with the \gls{GDL} Interpreter to discover what actions are available in each of the simulated states.
+\item Game Planner: Attempts to choose the best action for the current state of the game. If it uses simulations as part of its operation (very common) it may interface with the \textit{reasoner} to discover what actions are available in each of the simulated states.
 \end{itemize}
 
 \begin{figure}[h]
@@ -116,15 +116,14 @@ A simplified example of a GGP Player architecture can be seen in figure \ref{fig
     \label{fig:player architecture}
 \end{figure}
 
-The Game Planner is the biggest factor for system performance, as it is both the component that chooses the strategy and the one that requires the most computing power. The GDL Interpreter can also affect performance in a smaller but relevant way by using a significant portion of the computational power of the system. It becomes more important as more simulations are needed. 
+The Game Planner is the biggest factor for system performance, as it is both the component that chooses the strategy and the one that requires the most computing power. The Reasoner can also affect performance in a smaller but relevant way by using a significant portion of the computational power of the system. It becomes more important as more simulations are needed. 
 
 The currently most relevant solutions for both Game Planning and GDL interpretation are discussed in chapter \ref{chapter:state_of_the_art}.
 
-\subsection{Performance measurement}
+The measurement of game player performance is usually done by playing against a random player (a player that randomly chooses one of the legal actions for each turn) or by competition with other existing game players. This should be done in as many different games and types of games as possible, since playing just a few games well is of little value in General Game Playing.  
 
 
-
-\section{GDL Interpreter Techniques}
+\section{Reasoner Techniques}
 A \gls{GDL} description by itself isn't sufficient to know what actions are possible at each game state, such features must be deduced from the game rules. 
 There are two main ways of dealing with this:
 Interpreting the rules whenever necessary or converting the game rules to an efficient data structure. The first solution is generally simpler to implement but has sub-par performance. There are, of course, various possible data structures to store the game rules, only one is explored here, \textit{propositional networks}, as it has become very popular in recent works.
