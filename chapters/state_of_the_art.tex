@@ -12,35 +12,61 @@ There are other, smaller, \gls{GGP} competitions that usually have the same resu
 \section{State of the art players}
 
 (Improve this section after doing more research on the solutions)
-(reverse table axis, to be able to fit more information)
 
 Qualified Players for the 2015 Main Competition
+(Will probably need to search for previews years, since there's little information on the current top players)
+%\begin{table}[]
+%\centering
+%\caption{My caption}
+%\label{my-label}
+%\resizebox{\textwidth}{!}{%
+%\begin{tabular}{@{}llllllllll@{}}
+%\toprule
+%Name                  & Sancho & Galvanize & General & Alloy & QFWFQ & TurboTurtle & QuorumPlayer & LeJoueur & SteadyEddie \\ \midrule
+%Result                &        & 1st       &         &       &       &             &              &          &             \\
+%Reasoner              &        &           &         &       &       &             &              &          &             \\
+%Planner               &        &           &         &       &       &             &              &          &             \\
+%Additional Heuristics &        &           &         &       &       &             &              &          &             \\
+%Creators              &        &           &         &       &       &             &              &          &             \\ \bottomrule
+%\end{tabular}
+%}
+%\end{table}
 
-\begin{tabular}{| c | p{1cm} | p{3cm} | p{3cm} | p{3cm} | c | p{2.5cm} |}
-\hline
-  Name & Result & Reasoner & Planner & Additional \par Heuristics & Implementation & Creators \\
-\hline
-  Sancho & a & Prop. Network & MCTS with UCT & Yes, \par determined during game setup time & a & Steve Draper \par Andrew Rose \\
-\hline
-  Galvanise & a & Prop. Network & MCTS with UCT & a & a \\
-\hline
-  General & a & a & a & a & a\\
-  \hline
-  QFWFQ & a & a & a & a & a \\
-  \hline
-  Alloy & a & a & a & a & a \\
-\hline
-  TurboTurtle & a & a & a & a & a \\
-  \hline
-  QuorumPlayer & a & a & a & a & a \\
-    \hline
-  LeJoueur & a & a & a & a & a \\
-  \hline
-  SteadyEddie & a & a & a & a & a \\
+
+%\begin{table}
+%\newcommand{\TS}{p{1.35cm}}
+%\small
+%\begin{tabular}{| \TS | \TS | \TS | \TS | \TS | \TS | \TS | \TS | \TS | \TS |}
+%
+%\hline Name & Sancho & Galvanize & General & QFWFQ & Alloy & Turbo-Turtle & Quorum -Player & LeJoueur & Steady-Eddie \\
+%\hline Result & a & b & c & d & e & f & g & h & i \\
+%\hline Reasoner & a & b & c & d & e & f & g & h & i \\
+%\hline Planner & a & b & c & d & e & f & g & h & i \\
+%\hline Additional \par Heuristics & a & b & c & d & e & f & g & h & i \\
+%\hline Creators & a & b & c & d & e & f & g & h & i \\
+%  
+%\hline
+%\end{tabular}
+%\end{table}
+
+\begin{table}
+\small
+%\begin{tabular}{| c | p{1cm} | p{2.5cm} | p{2.5cm} | p{2.8cm} | c | p{2.2cm} |}
+\begin{tabular}{| c | c | c | c | p{2.5cm} | p{2.5cm} | p{2.5cm} |}
+\hline  Name & Result & Reasoner & Planner & Additional \par Heuristics & Implementation & Creators \\
+\hline  Galvanise & 1st & Prop. Network & MCTS with UCT & ? & 1 Xeon (AWS) & Richard Emslie \\
+\hline  Sancho & 2nd & Prop. Network & MCTS with UCT & Yes, \par determined during game setup time & 8 core i7 with 32GB RAM & Steve Draper \par Andrew Rose \\
+\hline  TurboTurtle & 3rd & ? & ? & ? & ? & Sam Schreiber \\
+\hline  General & 4th & ? & ? & ? & ? & ? \\ %searched
+\hline  QuorumPlayer & 5th & ? & ? & ? & ? & ? \\ %searched
+\hline  Alloy & 6th & ? & ? & ? & ? & Alex \\ %searched
+\hline  QFWFQ & 7th & ? & ? & ? & ? & ? \\ %searched
+\hline  SteadyEddie & 8th & ? & ? & ? & ? & ? \\ %searched
+\hline  LeJoueur & 9th & ? & ? & ? & ? & ? \\ %searched
   
 \hline
 \end{tabular}
-
+\end{table}
 
 
 \subsection{FluxPlayer}
