@@ -1,4 +1,4 @@
-%TEX root = ../dissertation.tex
+% !TEX root = ../dissertation.tex
 
 \chapter{Background}
 \label{chapter:background}
@@ -50,27 +50,27 @@ It should also provide a way of archiving the match history (all game states and
 
 \subsection{Game Player}
 Game Players are systems that can interpret a \gls{GDL} game description, communicate with the Game Manager and devise strategies to maximize their result in a certain game.
-Their aim is to be as general as possible while also having reasonably good performance in any game, which is a surprisingly difficult feat. Suffice it to say, sophisticated AI techniques like heuristics are very hard to successfully apply in a general, domain independent, way. 
+Their aim is to be as general as possible while also having reasonably good performance in any game, which is a surprisingly difficult feat. Suffice it to say, sophisticated AI techniques like heuristics are very hard to successfully apply in a general, domain independent, way.
 
 \section{Markov Decision Problem}
 The \gls{MDP} provides a way of mathematically modeling decision making and can help to formalize the task of GGP Players.
 In short, a Markov Decision Process is composed of 5 components:
 
 \begin{itemize}
-\item States - $S$ : The set of all possible states of the problem. 
+\item States - $S$ : The set of all possible states of the problem.
 
 \item Actions - $A(s)$ : The set of possible actions in state $s$.
 
 \item Model - $T(s, a, s') \sim Pr(s' | s, a)$ : The laws of the universe in which the problem is contained. In other words, what is the outcome (state $s'$) of taking an action $a$ in state $s$. The model can be deterministic or stochastic ($Pr(s' | s, a)$), where multiple outcomes are possible.
 
-\item Reward - $R(s, a, s')$ : What is the reward of taking action $a$ in state $s$ and transitioning to state $s'$. 
+\item Reward - $R(s, a, s')$ : What is the reward of taking action $a$ in state $s$ and transitioning to state $s'$.
 
 \item Discount Factor - $\gamma$ : Reduces the importance of distant rewards. It's important in the common case of a stochastic problem, since distant rewards may become unreachable due to external influence.
 \end{itemize}
 
-A policy, $\pi$, defines what action $\pi(s)$ the agent will take when in state $s$. Policies are solutions to \gls{MDP}'s. 
+A policy, $\pi$, defines what action $\pi(s)$ the agent will take when in state $s$. Policies are solutions to \gls{MDP}'s.
 
-In the domain of General Game Playing each different match has it's own \gls{MDP}, since the Model is defined not only by the game rules but also by the behavior of other players. Rewards and discount factors are also not solely dependent on the game rules (is it always a good move to take a Knight in chess?). 
+In the domain of General Game Playing each different match has it's own \gls{MDP}, since the Model is defined not only by the game rules but also by the behavior of other players. Rewards and discount factors are also not solely dependent on the game rules (is it always a good move to take a Knight in chess?).
 Most GGP matches have, therefore, unknown rewards and probabilities from the point of view of the player, making them \textit{reinforcement learning} problems. In these problems it is useful to define the function $Q(s,a)$, given by \ref{Q(s,a)}, and is an assessment of the quality of taking action $a$ in state $s$.
 
 \begin{center}
@@ -102,7 +102,7 @@ A simplified example of a GGP Player architecture can be seen in figure \ref{fig
 \begin{itemize}
 \item HTTP Server: Interfaces with the Game Master
 
-\item \gls{GDL} Interpreter (also known as \textit{Reasoner}): Analyses the game rules, in some cases changing their representation into a more efficient data structure 
+\item \gls{GDL} Interpreter (also known as \textit{Reasoner}): Analyses the game rules, in some cases changing their representation into a more efficient data structure
 
 \item Game State: Holds any relevant information about the game, like the current state or past moves by opponents (to maybe model their strategy)
 
@@ -116,15 +116,19 @@ A simplified example of a GGP Player architecture can be seen in figure \ref{fig
     \label{fig:player architecture}
 \end{figure}
 
-The Game Planner is the biggest factor for system performance, as it is both the component that chooses the strategy and the one that requires the most computing power. The Reasoner can also affect performance in a smaller but relevant way by using a significant portion of the computational power of the system. It becomes more important as more simulations are needed. 
+The Game Planner is the biggest factor for system performance, as it is both the component that chooses the strategy and the one that requires the most computing power. The Reasoner can also affect performance in a smaller but relevant way by using a significant portion of the computational power of the system. It becomes more important as more simulations are needed.
 
 The currently most relevant solutions for both Game Planning and GDL interpretation are discussed in chapter \ref{chapter:state_of_the_art}.
 
-The measurement of game player performance is usually done by playing against a random player (a player that randomly chooses one of the legal actions for each turn) or by competition with other existing game players. This should be done in as many different games and types of games as possible, since playing just a few games well is of little value in General Game Playing.  
+The measurement of game player performance is a hard task in itself. A simple method is playing against a random player (a player that randomly chooses one of the legal actions for each turn). It's no longer very useful because after a certain level of competence can player can beat the random player nearly all the time, so it becomes impossible to distinguish game players based on this metric alone.
+
+What is more commonly done is competition with other existing game players. This should be done in as many different games and types of games as possible, since playing just a few games well is of little value in General Game Playing.
+
+A very useful service is provided by ggp.org, the Tiltyard game server (tiltyard.ggp.org). It constantly arranges matches between the registered players and assigns an Agon skill rating to each player, based on the results. The Agon skill rating is very similar to the EloRank in Chess, except it also takes into account the perceived difficulty of the game and of playing a certain rule in that game.
 
 
 \section{Reasoner Techniques}
-A \gls{GDL} description by itself isn't sufficient to know what actions are possible at each game state, such features must be deduced from the game rules. 
+A \gls{GDL} description by itself isn't sufficient to know what actions are possible at each game state, such features must be deduced from the game rules.
 There are two main ways of dealing with this:
 Interpreting the rules whenever necessary or converting the game rules to an efficient data structure. The first solution is generally simpler to implement but has sub-par performance. There are, of course, various possible data structures to store the game rules, only one is explored here, \textit{propositional networks}, as it has become very popular in recent works.
 
@@ -138,7 +142,7 @@ The simplified analysis comes from the fact that it becomes simpler to recognize
 
 Propositional networks exploit the fact that, in the vast majority of games, there is limited influence to each action: each game symbol is affected only by a few other symbols, not all of them. For example, moving a pawn in Chess only changes the position of the moved pawn and perhaps an opponents piece is taken, the remaining pieces keep their previous state.
 
-The components of a basic propositional network can be seen in \ref{fig:propnets components}. 
+The components of a basic propositional network can be seen in \ref{fig:propnets components}.
 
 \begin{figure}[h]
 	\centering
@@ -147,8 +151,8 @@ The components of a basic propositional network can be seen in \ref{fig:propnets
     \label{fig:propnets components}
 \end{figure}
 
-Propositions are boolean valued and can represent things like action legality, if a piece is in a certain location, etc. A proposition is an \textit{input} if it's value is independent of the rest of the network and a \textit{view} if it's the result of a connective. 
-Connectives are transformations applied to propositions and be a transition or one of the 3 basic logic functions: \textit{and, or} or \textit{not}. A transition acts similarly to a register, its output does not changes until the game moves to the next state. A \textit{view} after a transition is called a \textit{base}. 
+Propositions are boolean valued and can represent things like action legality, if a piece is in a certain location, etc. A proposition is an \textit{input} if it's value is independent of the rest of the network and a \textit{view} if it's the result of a connective.
+Connectives are transformations applied to propositions and be a transition or one of the 3 basic logic functions: \textit{and, or} or \textit{not}. A transition acts similarly to a register, its output does not changes until the game moves to the next state. A \textit{view} after a transition is called a \textit{base}.
 
 A simple example of a propositional network can be seen in \ref{fig:propnets example}.
 
@@ -198,9 +202,9 @@ There have been several suggested improvements to the basic MCTS, although most 
 
 \item Mobility: Favors actions that lead to states with more move options relatively to other players.
 
-\item Approximate Goal Evaluation: Tries to calculate the degree of satisfaction of a GDL goal rule. 
+\item Approximate Goal Evaluation: Tries to calculate the degree of satisfaction of a GDL goal rule.
 
-\item Exploration: Measures the difference between states as a way to do a diverse exploration. 
+\item Exploration: Measures the difference between states as a way to do a diverse exploration.
 
 \item Statistical Symbol Counting: Before the start clock simulations are done to calculate the correlation between game score and certain game symbols (moves, pieces, board locations, etc). Symbols that do not change much are then ignored to allow more computation to be made on the more relevant ones.
 
@@ -215,4 +219,9 @@ Although currently not competitive with \gls{MCTS} on their own, heuristic techn
 
 There have been, however, some Heuristic based techniques to \gls{GGP} that don't use \gls{MCTS}.
 
-\subsection{Fill this in}
+\subsubsection{FluxPlayer}
+The winner of the second GGP competition, in 2006, this player used fuzzy logic to determine how close to terminal a certain state is.
+
+Fuzzy logic is a form of logic that allows multiple different values beyond True or False, and also allows overlap between these values. For example: water can be considered cold, warm or hot, but also warm and hot at the same time, since for some temperatures it is not clear which one is the correct one. Fuzzy logic also allows each of these states to have varying degrees of certainty: the water can be 80\% warm and 10\% cold, allowing conditions like if water is very warm: add some cold water, where the very keyword is also part of the fuzzy logic implementation.
+
+The system also used a novel heuristic search that could be computed from the specifications of the game.

@@ -1,20 +1,26 @@
+% !TEX root = ../dissertation.tex
+
 \chapter{State of the Art}
 \label{chapter:state_of_the_art}
 
 \section{Competition as a benchmark}
-The General Game Playing annual competition has been, since its creation in 2005 in Stanford University, the way to know which methods are the state of the art. 
+The General Game Playing annual competition has been, since its creation in 2005 in Stanford University, the way to know which methods are the state of the art.
 While in the early years of the competition there was a bigger focus on intelligent heuristics, Monte Carlo Tree Search (MCTS) has dominated the competition ever since, since it’s domain independent (general), inherently parallel and has shown better performance in most of the tested games. One of the most important features of MCTS is that the process of building the tree can be paused when necessary (for example when a turn ends) and continued at a later time. This allows a player to continue the simulations throughout the whole game, without restarting after each turn.
-The variant of MCTS commonly used in GGP is called Upper Confidence Bounds Applied for Trees (UCT), which provides a simple method to balance tree exploration (search new branches) and exploitation (search deeper in the known branches). 
+The variant of MCTS commonly used in GGP is called Upper Confidence Bounds Applied for Trees (UCT), which provides a simple method to balance tree exploration (search new branches) and exploitation (search deeper in the known branches).
 
 There are other, smaller, \gls{GGP} competitions that usually have the same results in terms of what techniques tend to perform best.
 
+\section{The Tiltyard game server as a benchmark}
 
 \section{State of the art players}
 
-(Improve this section after doing more research on the solutions)
+Sancho and Galvanize also hold the 3 top spots on the Tiltyard server (they have multiple entries, like many other projects, because they have registered multiple versions on the site)
+
+Sancho won the 2014 annual competition and currently holds 1st place in the Tiltyard server.
+Galvanize is the current world champion.
+
 
 Qualified Players for the 2015 Main Competition
-(Will probably need to search for previews years, since there's little information on the current top players)
 %\begin{table}[]
 %\centering
 %\caption{My caption}
@@ -44,26 +50,28 @@ Qualified Players for the 2015 Main Competition
 %\hline Planner & a & b & c & d & e & f & g & h & i \\
 %\hline Additional \par Heuristics & a & b & c & d & e & f & g & h & i \\
 %\hline Creators & a & b & c & d & e & f & g & h & i \\
-%  
+%
 %\hline
 %\end{tabular}
 %\end{table}
 
-\begin{table}
+\begin{table}[!h]
+\caption{Qualified Players for the 2015 Main Competition}
+\label{2015 World Competition}
 \small
 %\begin{tabular}{| c | p{1cm} | p{2.5cm} | p{2.5cm} | p{2.8cm} | c | p{2.2cm} |}
 \begin{tabular}{| c | c | c | c | p{2.5cm} | p{2.5cm} | p{2.5cm} |}
 \hline  Name & Result & Reasoner & Planner & Additional \par Heuristics & Implementation & Creators \\
 \hline  Galvanise & 1st & Prop. Network & MCTS with UCT & ? & 1 Xeon (AWS) & Richard Emslie \\
 \hline  Sancho & 2nd & Prop. Network & MCTS with UCT & Yes, \par determined during game setup time & 8 core i7 with 32GB RAM & Steve Draper \par Andrew Rose \\
-\hline  TurboTurtle & 3rd & ? & ? & ? & ? & Sam Schreiber \\
+\hline  TurboTurtle & 3rd & Prop- Network & MCTS with UCT & ? & ? & Sam Schreiber \\
 \hline  General & 4th & ? & ? & ? & ? & ? \\ %searched
 \hline  QuorumPlayer & 5th & ? & ? & ? & ? & ? \\ %searched
 \hline  Alloy & 6th & ? & ? & ? & ? & Alex \\ %searched
 \hline  QFWFQ & 7th & ? & ? & ? & ? & ? \\ %searched
 \hline  SteadyEddie & 8th & ? & ? & ? & ? & ? \\ %searched
 \hline  LeJoueur & 9th & ? & ? & ? & ? & ? \\ %searched
-  
+
 \hline
 \end{tabular}
 \end{table}
@@ -76,8 +84,6 @@ Fuzzy logic is a form of logic that allows multiple different values beyond True
 
 The system also used a novel heuristic search that could be computed from the specifications of the game.
 
-\subsection{Cadia Player}
-Winner in 2007, started the reign of MCTS players in GGP.
 
 \subsection{Sancho}
 Champion in 2014, info here, need to research it: \url{http://sanchoggp.blogspot.pt/2014/05/what-is-sancho.html}
@@ -90,15 +96,4 @@ MCTS player with a few notable changes:
 \subsection{Galvanize}
 This years champion, MCTS based, research it:
 \url{https://bitbucket.org/rxe/galvanise_v2}
-
-\subsection{comparison}
-research the top players from here:
-\url{http://www.ggp.org/view/tiltyard/players/}
-and here:
-\url{https://docs.google.com/spreadsheets/d/12SWEXYAmCCGCm5jI-e0t1HGlMFXXeKSgyuU1boTioJ4/edit#gid=0&vpid=A1}
-and make a comparison table.
-If possible, run some of them and do my own comparisons.
-
-
-
 

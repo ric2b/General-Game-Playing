@@ -1,4 +1,4 @@
-%!TEX root = ../dissertation.tex
+% !TEX root = ../dissertation.tex
 
 \chapter{Introduction}
 \label{chapter:introduction}
@@ -14,10 +14,20 @@ This over-specialization limits the usefulness of these systems. It is then of o
 \chapquote{``A human being should be able to (...) design a building, write a sonnet, balance accounts, build a wall, set a bone, comfort the dying, take orders, give orders, cooperate, act alone, solve equations, analyze a problem, pitch manure, program a computer, fight efficiently, die gallantly. \\ Specialization is for insects.''}{Robert A. Heinlein}{Time Enough for Love}
 
 \gls{GGP} aims to develop general game playing systems, systems that can play any game when given the rules, acting as a stepping stone for General Intelligence research. Artificial General Intelligence has been a topic for science-fiction stories and, if possible, can be the biggest revolution in human history, allowing for an unprecedented ability of problem-solving.
- 
-\section{Multi-game playing} 
- 
+
+\section{Multi-game playing}
+
+Multi-game playing is the concept of developing programs that can play not just one, but many different games. This is not to be mistaken with combining many programs into one, multi-game players should be able to adapt to games unknown to them as well. Doing this requires many traits shared by \textit{Artificial Intelligence} research, such as deduction, reasoning, problem solving, intelligent search, knowledge representation, planning and learning.
+
+General Game Playing was proposed in 2005 by Standford University as a platform for for multi-game playing research. An online course was created by Standford University and there are several new GGP projects every year, as well as various competitions, the biggest one being the annual GGP competition, held at the AAAI conference.
+
+More recently another platform also appeared, General Video-Game Playing (GGVP), which focuses on video games.
+
 \subsection{Early attempts at multi-game playing}
+
+Possibly the earliest work on the subject was done in 1969 by Jaques Pitriat in \cite{Pitrat1969}. There were other notable works in the 90's, like SAL, Hoyle, Morph, METAGAMER and Zillions of Games, two of them described in more detail below.
+
+\subsubsection{Zillions of Games}
 
 Write some more here...
 
@@ -30,20 +40,17 @@ A system developed in the 90’s, using a training scheme called lesson and prac
 
 \item [2nd.] Advisers in this tier chose moves according to certain goals. These decisions were also final.
 
-\item [3rd.] Advisers in the last tier differed from the first tiers in an important way: The decision of each Adviser wasn’t final, the final decision was decided by a process similar to taking a vote between the Advisers in this 3rd tier. Advisers votes were weighted in accordance to the lesson and practice results: Advisers that were more often correct during the training stage received bigger weights. 
+\item [3rd.] Advisers in the last tier differed from the first tiers in an important way: The decision of each Adviser wasn’t final, the final decision was decided by a process similar to taking a vote between the Advisers in this 3rd tier. Advisers votes were weighted in accordance to the lesson and practice results: Advisers that were more often correct during the training stage received bigger weights.
 
 \end{enumerate}
 This process of weighting the Advisers was crucial to the performance of the system and could even be worse than a random player if done incorrectly. If none of the 3rd tier advisers were even remotely related to the game being played the results would also be disappointing. Having a varied pool of Advisers was for this reason vital but they were never, by definition, general enough to be useful for any game. Hoyle was tested in 18 two-player board games, its potential in complex games was never verified.
 
-\subsection{General Game Playing}
-
-Fill this in
 
 \section{Objectives}
 
 \paragraph{Main Objectives:}
 \begin{itemize}
-\item Research and compare current techniques and solutions for GGP players 
+\item Research and compare current techniques and solutions for GGP players
 \item Improve or develop new techniques for game playing
 \item Use the improvements to make a new GGP player
 \item Benchmark the player against other existing GGP players
