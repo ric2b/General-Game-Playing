@@ -54,24 +54,24 @@
   morecomment=[l]{;},
 }
 
-\newtoggle{InString}{}% Keep track of if we are within a string
-\togglefalse{InString}% Assume not initally in string
-
-\newcommand*{\ColorIfNotInString}[1]{\iftoggle{InString}{#1}{\color{numbercolor}#1}}%
-\newcommand*{\ProcessQuote}[1]{#1\iftoggle{InString}{\global\togglefalse{InString}}{\global\toggletrue{InString}}}%
-\lstset{literate=%
-    {"}{{{\ProcessQuote{"}}}}1% Disable coloring within double quotes
-    {'}{{{\ProcessQuote{'}}}}1% Disable coloring within single quote
-    {0}{{{\ColorIfNotInString{0}}}}1
-    {1}{{{\ColorIfNotInString{1}}}}1
-    {2}{{{\ColorIfNotInString{2}}}}1
-    {3}{{{\ColorIfNotInString{3}}}}1
-    {4}{{{\ColorIfNotInString{4}}}}1
-    {5}{{{\ColorIfNotInString{5}}}}1
-    {6}{{{\ColorIfNotInString{6}}}}1
-    {7}{{{\ColorIfNotInString{7}}}}1
-    {8}{{{\ColorIfNotInString{8}}}}1
-    {9}{{{\ColorIfNotInString{9}}}}1
-}
+%\newtoggle{InString}{}% Keep track of if we are within a string
+%\togglefalse{InString}% Assume not initally in string
+%
+%\newcommand*{\ColorIfNotInString}[1]{\iftoggle{InString}{#1}{\color{numbercolor}#1}}%
+%\newcommand*{\ProcessQuote}[1]{#1\iftoggle{InString}{\global\togglefalse{InString}}{\global\toggletrue{InString}}}%
+%\lstset{literate=%
+%    {"}{{{\ProcessQuote{"}}}}1% Disable coloring within double quotes
+%    {'}{{{\ProcessQuote{'}}}}1% Disable coloring within single quote
+%    {0}{{{\ColorIfNotInString{0}}}}1
+%    {1}{{{\ColorIfNotInString{1}}}}1
+%    {2}{{{\ColorIfNotInString{2}}}}1
+%    {3}{{{\ColorIfNotInString{3}}}}1
+%    {4}{{{\ColorIfNotInString{4}}}}1
+%    {5}{{{\ColorIfNotInString{5}}}}1
+%    {6}{{{\ColorIfNotInString{6}}}}1
+%    {7}{{{\ColorIfNotInString{7}}}}1
+%    {8}{{{\ColorIfNotInString{8}}}}1
+%    {9}{{{\ColorIfNotInString{9}}}}1
+%}
 
 %%%%%%%%%%%%% GDL listings %%%%%%%%%%%%%%%%%%%
