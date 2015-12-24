@@ -3,16 +3,15 @@
 \chapter{State of the Art}
 \label{chapter:state_of_the_art}
 
-\section{Competition as a benchmark}
-The General Game Playing annual competition has been, since its creation in 2005 in Stanford University, the way to know which methods are the state of the art.
-While in the early years of the competition there was a bigger focus on intelligent heuristics, Monte Carlo Tree Search (MCTS) has dominated the competition ever since, since it’s domain independent (general), inherently parallel and has shown better performance in most of the tested games. One of the most important features of MCTS is that the process of building the tree can be paused when necessary (for example when a turn ends) and continued at a later time. This allows a player to continue the simulations throughout the whole game, without restarting after each turn.
-The variant of MCTS commonly used in GGP is called Upper Confidence Bounds Applied for Trees (UCT), which provides a simple method to balance tree exploration (search new branches) and exploitation (search deeper in the known branches).
+\section{The world competition as a benchmark}
+The General Game Playing annual world competition, held at the AAAI conference since 2005, has been the community accepted way to know what are the state of the art players. 
+As of 2015, it uses a double-elimination tournament between the qualified players.
+The qualification phase is open to anyone who wants to participate and consists of several tests designed to test stability and ability. All the players that surpass a threshold score are entered into the main tournament.
 
-There are other, smaller, \gls{GGP} competitions that usually have the same results in terms of what techniques tend to perform best.
 
 \section{The Tiltyard game server as a benchmark}
 
-\ref{sssec:MeasuringPerformance}
+The Tiltyard game server, mentioned in section \ref{sssec:MeasuringPerformance}, is also a great way of comparing performance, since it constantly runs matches between the registered players and ranks them according to the \textit{Agon Skill} metric (explained in section \ref{sssec:AgonSkill}). This allows for more thorough testing of each player, as over time they are matched against more players and with more games than on a single competition. One of the downsides is that, unlike competitions, the games are not kept secret. However this is likely a small issue since there are no rewards for being the top player and as the game library grows it becomes increasingly impractical to make specializations for the games used by the Tiltyard game server.
 
 \section{State of the art players}
 
@@ -80,6 +79,7 @@ Qualified Players for the 2015 Main Competition
 
 
 \subsection{Sancho}
+\label{ssc:Sancho}
 Champion in 2014 and currently the first place in the Tiltyard game server.
 
 Like most recent game players, it uses \gls{MCTS} with \gls{UCT} as the  basis for it's game planner. The game planner has a few notable features: 
@@ -103,7 +103,13 @@ It's written in Java and for the 2015 world competition it ran on a computer wit
 
 \subsection{Galvanize}
 The current (2015) champion and the second place in the Tiltyard game server.
+It's very similar to Sancho (\ref{ssc:Sancho}), at least from a high-level perspective. 
 
-FILL IN
+It also uses \gls{MCTS} with \gls{UCT} as the base for it's planner, with some dynamic techniques to balance the amount of computation given to the \textit{search} and \textit{backpropagation} steps of \gls{MCTS}. It seems to use a normal Monte Carlo Tree, unlike Sancho's more general graph (not mentioned by the developer). 
+It's GDL Reasoner is also based on Propositional Networks, it's capable of game factorization and can optimize for inputs that keep switching between \textit{on} and \textit{off}, by storing both results instead of recalculating.
 
-It's written in a mixture of Python and C++ (with the computationally intensive parts done on C++), for the 2015 world competition it ran on an Amazon Web Services server with a single Intel Xeon processor.
+It's written in a mixture of Python and C++ (with all optimizations turned on), for the 2015 world competition it ran on an Amazon Web Services server with a single Intel Xeon processor. 
+
+\section{Comparison}
+While in the early years of the competition there was a bigger focus on intelligent heuristics, Monte Carlo Tree Search (MCTS) has dominated the competition ever since, since it’s domain independent (general), easy to parallelize and has shown better performance in most of the tested games. One of the most important features of MCTS is that the process of building the tree can be paused when necessary (for example when a turn ends) and continued at a later time. This allows a player to continue the simulations throughout the whole game, without restarting after each turn.
+The variant of MCTS commonly used in GGP is called Upper Confidence Bounds Applied for Trees (UCT), which provides a simple method to balance tree exploration (search new branches) and exploitation (search deeper in the known branches).
