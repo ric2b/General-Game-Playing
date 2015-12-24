@@ -120,11 +120,18 @@ The Game Planner is the biggest factor for system performance, as it is both the
 
 The currently most relevant solutions for both Game Planning and GDL interpretation are discussed in chapter \ref{chapter:state_of_the_art}.
 
+\subsection{Measuring performance}
+\label{sssec:MeasuringPerformance}
+
 The measurement of game player performance is a hard task in itself. A simple method is playing against a random player (a player that randomly chooses one of the legal actions for each turn). It's no longer very useful because after a certain level of competence can player can beat the random player nearly all the time, so it becomes impossible to distinguish game players based on this metric alone.
 
 What is more commonly done is competition with other existing game players. This should be done in as many different games and types of games as possible, since playing just a few games well is of little value in General Game Playing.
 
 A very useful service is provided by ggp.org, the Tiltyard game server (tiltyard.ggp.org). It constantly arranges matches between the registered players and assigns an Agon skill rating to each player, based on the results. The Agon skill rating is very similar to the EloRank in Chess, except it also takes into account the perceived difficulty of the game and of playing a certain rule in that game.
+
+\subsubsection{Agon Skill}
+
+
 
 
 \section{Reasoner Techniques}
@@ -219,9 +226,13 @@ Although currently not competitive with \gls{MCTS} on their own, heuristic techn
 
 There have been, however, some Heuristic based techniques to \gls{GGP} that don't use \gls{MCTS}.
 
-\subsubsection{FluxPlayer}
-The winner of the second GGP competition, in 2006, this player used fuzzy logic to determine how close to terminal a certain state is.
+\subsubsection{MinMax}
 
-Fuzzy logic is a form of logic that allows multiple different values beyond True or False, and also allows overlap between these values. For example: water can be considered cold, warm or hot, but also warm and hot at the same time, since for some temperatures it is not clear which one is the correct one. Fuzzy logic also allows each of these states to have varying degrees of certainty: the water can be 80\% warm and 10\% cold, allowing conditions like if water is very warm: add some cold water, where the very keyword is also part of the fuzzy logic implementation.
+\subsubsection{Alpha-Beta Pruning}
 
-The system also used a novel heuristic search that could be computed from the specifications of the game.
+%\subsubsection{FluxPlayer}
+%The winner of the second GGP competition, in 2006, this player used fuzzy logic to determine how close to terminal a certain state is.
+%
+%Fuzzy logic is a form of logic that allows multiple different values beyond True or False, and also allows overlap between these values. For example: water can be considered cold, warm or hot, but also warm and hot at the same time, since for some temperatures it is not clear which one is the correct one. Fuzzy logic also allows each of these states to have varying degrees of certainty: the water can be 80\% warm and 10\% cold, allowing conditions like if water is very warm: add some cold water, where the very keyword is also part of the fuzzy logic implementation.
+%
+%The system also used a novel heuristic search that could be computed from the specifications of the game.

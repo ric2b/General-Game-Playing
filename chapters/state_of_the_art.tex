@@ -12,6 +12,8 @@ There are other, smaller, \gls{GGP} competitions that usually have the same resu
 
 \section{The Tiltyard game server as a benchmark}
 
+\ref{sssec:MeasuringPerformance}
+
 \section{State of the art players}
 
 Sancho and Galvanize also hold the 3 top spots on the Tiltyard server (they have multiple entries, like many other projects, because they have registered multiple versions on the site)
@@ -55,14 +57,14 @@ Qualified Players for the 2015 Main Competition
 %\end{tabular}
 %\end{table}
 
-\begin{table}[!h]
+\begin{table}[h]
 \caption{Qualified Players for the 2015 Main Competition}
 \label{2015 World Competition}
 \small
 %\begin{tabular}{| c | p{1cm} | p{2.5cm} | p{2.5cm} | p{2.8cm} | c | p{2.2cm} |}
 \begin{tabular}{| c | c | c | c | p{2.5cm} | p{2.5cm} | p{2.5cm} |}
 \hline  Name & Result & Reasoner & Planner & Additional \par Heuristics & Implementation & Creators \\
-\hline  Galvanise & 1st & Prop. Network & MCTS with UCT & ? & 1 Xeon (AWS) & Richard Emslie \\
+\hline  Galvanise & 1st & Prop. Network & MCTS with UCT & Yes, \par determined during game setup time & 1 Xeon (AWS) & Richard Emslie \\
 \hline  Sancho & 2nd & Prop. Network & MCTS with UCT & Yes, \par determined during game setup time & 8 core i7 with 32GB RAM & Steve Draper \par Andrew Rose \\
 \hline  TurboTurtle & 3rd & Prop- Network & MCTS with UCT & ? & ? & Sam Schreiber \\
 \hline  General & 4th & ? & ? & ? & ? & ? \\ %searched
@@ -77,23 +79,31 @@ Qualified Players for the 2015 Main Competition
 \end{table}
 
 
-\subsection{FluxPlayer}
-The winner of the second GGP competition, in 2006, this player used fuzzy logic to determine how close to terminal a certain state is.
-
-Fuzzy logic is a form of logic that allows multiple different values beyond True or False, and also allows overlap between these values. For example: water can be considered cold, warm or hot, but also warm and hot at the same time, since for some temperatures it is not clear which one is the correct one. Fuzzy logic also allows each of these states to have varying degrees of certainty: the water can be 80\% warm and 10\% cold, allowing conditions like if water is very warm: add some cold water, where the very keyword is also part of the fuzzy logic implementation.
-
-The system also used a novel heuristic search that could be computed from the specifications of the game.
-
-
 \subsection{Sancho}
-Champion in 2014, info here, need to research it: \url{http://sanchoggp.blogspot.pt/2014/05/what-is-sancho.html}
+Champion in 2014 and currently the first place in the Tiltyard game server.
 
-MCTS player with a few notable changes:
-- propositional-network-based state machine (based on Petri Networks)
-- general graph instead of MCTS tree
-- some heuristics determined at game setup time
+Like most recent game players, it uses \gls{MCTS} with \gls{UCT} as the  basis for it's game planner. The game planner has a few notable features: 
+
+\begin{itemize}
+
+\item Replacement of the MCTS tree with a more general graph, which allows for transitions between lines of play without duplication of nodes for any given state.
+
+\item Active trimming of lines that have fully-determined outcomes, propagating those outcomes up the MCTS structure to the highest level at which they remain fully determined (with best play).
+
+\item An efficient infrastructure for parallelization across threads.
+
+\item Use of heuristics, determined during game setup time, to aid MCTS selection in preferentially expanding some branches.
+
+For it's \gls{GDL} Reasoner it uses Propositional Networks and it's capable of identifying disjunctive factoring opportunities and significant latches (latches are game properties that after becoming \textit{true} can never change value throughout the rest of the game).
+
+It's written in Java and for the 2015 world competition it ran on a computer with an 8 core Intel i7 with 32GB of RAM.
+
+\end{itemize}
+
 
 \subsection{Galvanize}
-This years champion, MCTS based, research it:
-\url{https://bitbucket.org/rxe/galvanise_v2}
+The current (2015) champion and the second place in the Tiltyard game server.
 
+FILL IN
+
+It's written in a mixture of Python and C++ (with the computationally intensive parts done on C++), for the 2015 world competition it ran on an Amazon Web Services server with a single Intel Xeon processor.
