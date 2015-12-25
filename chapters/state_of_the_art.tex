@@ -63,15 +63,27 @@ Qualified Players for the 2015 Main Competition
 %\begin{tabular}{| c | p{1cm} | p{2.5cm} | p{2.5cm} | p{2.8cm} | c | p{2.2cm} |}
 \begin{tabular}{| c | c | c | c | p{2.5cm} | p{2.5cm} | p{2.5cm} |}
 \hline  Name & Result & Reasoner & Planner & Additional \par Heuristics & Implementation & Creators \\
-\hline  Galvanise & 1st & Prop. Network & MCTS with UCT & Yes, \par determined during game setup time & 1 Xeon (AWS) & Richard Emslie \\
-\hline  Sancho & 2nd & Prop. Network & MCTS with UCT & Yes, \par determined during game setup time & 8 core i7 with 32GB RAM & Steve Draper \par Andrew Rose \\
-\hline  TurboTurtle & 3rd & Prop- Network & MCTS with UCT & ? & ? & Sam Schreiber \\
-\hline  General & 4th & ? & ? & ? & ? & ? \\ %searched
-\hline  QuorumPlayer & 5th & ? & ? & ? & ? & ? \\ %searched
-\hline  Alloy & 6th & ? & ? & ? & ? & Alex \\ %searched
-\hline  QFWFQ & 7th & ? & ? & ? & ? & ? \\ %searched
-\hline  SteadyEddie & 8th & ? & ? & ? & ? & ? \\ %searched
-\hline  LeJoueur & 9th & ? & ? & ? & ? & ? \\ %searched
+
+\hline  Galvanise & 1st : 192.72 & Prop. Network & MCTS with UCT & Yes, \par determined during game setup time & 1 Xeon (AWS) & Richard Emslie \\
+
+\hline  Sancho & 2nd : 213.18 & Prop. Network & MCTS with UCT & Yes, \par determined during game setup time & 8 core i7 with 32GB RAM & Steve Draper \par Andrew Rose \\
+
+%\hline  CadiaPlayer & - : 31.39 & Prop. Network & MCTS with UCT & Yes, \par determined during game setup time & 8 core i7 with 32GB RAM & Steve Draper \par Andrew Rose \\
+
+\hline  Ari & - : 50.54 & ? & ? & ? & ? & ? \\
+
+\hline  FluxPlayer & - : 34.05 & ? & ? & ? & ? & ? \\
+
+\hline  Random & - : -359.75 & ? & ? & ? & ? & ggp.org \\
+
+
+%\hline  TurboTurtle & 3rd & Prop- Network & MCTS with UCT & ? & ? & Sam Schreiber \\
+%\hline  General & 4th & ? & ? & ? & ? & ? \\ %searched
+%\hline  QuorumPlayer & 5th & ? & ? & ? & ? & ? \\ %searched
+%\hline  Alloy & 6th & ? & ? & ? & ? & Alex \\ %searched
+%\hline  QFWFQ & 7th & ? & ? & ? & ? & ? \\ %searched
+%\hline  SteadyEddie & 8th & ? & ? & ? & ? & ? \\ %searched
+%\hline  LeJoueur & 9th & ? & ? & ? & ? & ? \\ %searched
 
 \hline
 \end{tabular}
@@ -111,5 +123,8 @@ It's GDL Reasoner is also based on Propositional Networks, it's capable of game 
 It's written in a mixture of Python and C++ (with all optimizations turned on), for the 2015 world competition it ran on an Amazon Web Services server with a single Intel Xeon processor. 
 
 \section{Comparison}
+
+UPDATE THIS
+
 While in the early years of the competition there was a bigger focus on intelligent heuristics, Monte Carlo Tree Search (MCTS) has dominated the competition ever since, since it’s domain independent (general), easy to parallelize and has shown better performance in most of the tested games. One of the most important features of MCTS is that the process of building the tree can be paused when necessary (for example when a turn ends) and continued at a later time. This allows a player to continue the simulations throughout the whole game, without restarting after each turn.
 The variant of MCTS commonly used in GGP is called Upper Confidence Bounds Applied for Trees (UCT), which provides a simple method to balance tree exploration (search new branches) and exploitation (search deeper in the known branches).
