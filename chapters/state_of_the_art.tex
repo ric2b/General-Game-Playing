@@ -13,15 +13,32 @@ The qualification phase is open to anyone who wants to participate and consists 
 
 The Tiltyard game server, mentioned in section \ref{sssec:MeasuringPerformance}, is also a great way of comparing performance, since it constantly runs matches between the registered players and ranks them according to the \textit{Agon Skill} metric (explained in section \ref{sssec:AgonSkill}). This allows for more thorough testing of each player, as over time they are matched against more players and with more games than on a single competition. One of the downsides is that, unlike competitions, the games are not kept secret. However this is likely a small issue since there are no rewards for being the top player and as the game library grows it becomes increasingly impractical to make specializations for the games used by the Tiltyard game server.
 
-\section{State of the art players}
 
-Sancho and Galvanize also hold the 3 top spots on the Tiltyard server (they have multiple entries, like many other projects, because they have registered multiple versions on the site)
 
+\section{Results and characteristics of a few well important players}
+
+The choice for what players were presented was based on the following:
+\begin{itemize}
+
+\item Should include the current top performers 
+
+\item There should be a good amount of information about the systems, from the authors themselves
+
+\item As a group, they should allow for comparisons on the performance of various techniques
+
+
+Galvanize is the current world champion. 
 Sancho won the 2014 annual competition and currently holds 1st place in the Tiltyard server.
-Galvanize is the current world champion.
+
+Sancho and Galvanize hold the 3 top spots on the Tiltyard server (they have multiple entries, like many other projects, because they have registered multiple versions on the site)
+
+Ari and FluxPlayer are former world champions that are well documented and serve as a base for comparison of different techniques.
+
+Random is included to provide a notion on the \textit{Agon Skill} of an incredibly player, as it currently has the second to worst rating on the Tiltyard game server.
+
+\end{itemize}
 
 
-Qualified Players for the 2015 Main Competition
 %\begin{table}[]
 %\centering
 %\caption{My caption}
@@ -56,25 +73,31 @@ Qualified Players for the 2015 Main Competition
 %\end{tabular}
 %\end{table}
 
+%\newpage
+
+\newcolumntype{P}{ >{\centering\arraybackslash} m }
+
 \begin{table}[h]
-\caption{Qualified Players for the 2015 Main Competition}
-\label{2015 World Competition}
+\caption{Results and characteristics of a few important players}
+\label{table:Players}
 \small
 %\begin{tabular}{| c | p{1cm} | p{2.5cm} | p{2.5cm} | p{2.8cm} | c | p{2.2cm} |}
-\begin{tabular}{| c | c | c | c | p{2.5cm} | p{2.5cm} | p{2.5cm} |}
-\hline  Name & Result & Reasoner & Planner & Additional \par Heuristics & Implementation & Creators \\
+\begin{tabular}{| c | P{2cm} | P{2cm} | c | c | P{2.5cm} | P{2.5cm} |}
+\hline  Name & 2015 GGP competition placement & Agon Skill (as of 12/2015) & Reasoner & Planner & Additional \par Heuristics & Hardware \\
 
-\hline  Galvanise & 1st : 192.72 & Prop. Network & MCTS with UCT & Yes, \par determined during game setup time & 1 Xeon (AWS) & Richard Emslie \\
+\hline  Galvanise & 1st & 192.72 & Prop. Network & MCTS with UCT & Yes, determined during game setup time & 1 Xeon (AWS) \\
 
-\hline  Sancho & 2nd : 213.18 & Prop. Network & MCTS with UCT & Yes, \par determined during game setup time & 8 core i7 with 32GB RAM & Steve Draper \par Andrew Rose \\
+\hline  Sancho & 2nd & 213.18 & Prop. Network & MCTS with UCT & Yes, determined during game setup time & 8 core i7 with 32GB RAM \\
+
+\hline  TurboTurtle & 3rd & Not registered in Tiltyard g.s. & Prop. Network & MCTS with UCT & No & ? \\
 
 %\hline  CadiaPlayer & - : 31.39 & Prop. Network & MCTS with UCT & Yes, \par determined during game setup time & 8 core i7 with 32GB RAM & Steve Draper \par Andrew Rose \\
 
-\hline  Ari & - : 50.54 & ? & ? & ? & ? & ? \\
+\hline  Ari & Didn't participate & 50.54 & Prolog-based & MCTS with UCT & No & ? \\
 
-\hline  FluxPlayer & - : 34.05 & ? & ? & ? & ? & ? \\
+\hline  FluxPlayer & Didn't participate & 34.05 & Prolog-based & Heuristic-based & Yes, determined during game setup time & ? \\
 
-\hline  Random & - : -359.75 & ? & ? & ? & ? & ggp.org \\
+\hline  Random & Didn't participate & -359.75 & Prolog-based & Random & No & Not relevant \\
 
 
 %\hline  TurboTurtle & 3rd & Prop- Network & MCTS with UCT & ? & ? & Sam Schreiber \\
@@ -88,6 +111,19 @@ Qualified Players for the 2015 Main Competition
 \hline
 \end{tabular}
 \end{table}
+
+
+
+\subsection{Galvanize}
+The current (2015) champion and the second place in the Tiltyard game server.
+It's very similar to Sancho (\ref{ssc:Sancho}), at least from a high-level perspective. 
+
+It also uses \gls{MCTS} with \gls{UCT} as the base for it's planner, with some dynamic techniques to balance the amount of computation given to the \textit{search} and \textit{backpropagation} steps of \gls{MCTS}. It seems to use a normal Monte Carlo Tree, unlike Sancho's more general graph (not mentioned by the developer). 
+It's GDL Reasoner is also based on Propositional Networks, it's capable of game factorization and can optimize for inputs that keep switching between \textit{on} and \textit{off}, by storing both results instead of recalculating.
+
+It's written in a mixture of Python and C++ (with all optimizations turned on), for the 2015 world competition it ran on an Amazon Web Services server with a single Intel Xeon processor. 
+
+Created by Richard Emslie.
 
 
 \subsection{Sancho}
@@ -104,7 +140,7 @@ Like most recent game players, it uses \gls{MCTS} with \gls{UCT} as the  basis f
 
 \item An efficient infrastructure for parallelization across threads.
 
-\item Use of heuristics, determined during game setup time, to aid MCTS selection in preferentially expanding some branches.
+\item Use of heuristics, determined during game setup time, to aid \gls{MCTS} selection in preferentially expanding some branches.
 
 For it's \gls{GDL} Reasoner it uses Propositional Networks and it's capable of identifying disjunctive factoring opportunities and significant latches (latches are game properties that after becoming \textit{true} can never change value throughout the rest of the game).
 
@@ -112,19 +148,50 @@ It's written in Java and for the 2015 world competition it ran on a computer wit
 
 \end{itemize}
 
+Created by Steve Draper and Andrew Rose.
 
-\subsection{Galvanize}
-The current (2015) champion and the second place in the Tiltyard game server.
-It's very similar to Sancho (\ref{ssc:Sancho}), at least from a high-level perspective. 
+\subsection{TurboTurtle}
+The winner of world GGP competition in 2011 and 2013.
 
-It also uses \gls{MCTS} with \gls{UCT} as the base for it's planner, with some dynamic techniques to balance the amount of computation given to the \textit{search} and \textit{backpropagation} steps of \gls{MCTS}. It seems to use a normal Monte Carlo Tree, unlike Sancho's more general graph (not mentioned by the developer). 
-It's GDL Reasoner is also based on Propositional Networks, it's capable of game factorization and can optimize for inputs that keep switching between \textit{on} and \textit{off}, by storing both results instead of recalculating.
+Like Sancho and Galvanize, it uses \gls{MCTS} with \gls{UCT} for it's game planner.
 
-It's written in a mixture of Python and C++ (with all optimizations turned on), for the 2015 world competition it ran on an Amazon Web Services server with a single Intel Xeon processor. 
+It's GDL reasoner tries to maximize the number of simulations that are made instead of focusing on rule analysis. It does this by converting the rules to a Propositional Network and then attempting to compile into a programmatic representation of the game state machine in C++. When this fails simpler, less efficient, state machines are used, such as a Prover state machine that operates directly on the game rules instead of using a Propositional Network as an intermediate form.
+One other useful technique is that, when faced with a single-player game (i.e. a puzzle), it will convert game rules into an Answer Set Program and then use an off-the-shelf ASP solver to find the optimal set of moves to solve the puzzle. This approach works well for small puzzles but is usually innefective for big puzzles, like Sudoku.
+
+The main competitive strength that TurboTurtle currently has is the efficiency of its Propositional Network converted do C++ approach. Whenever this technique cannot be used it's results are sub-par. 
+
+Created by Sam Schreiber.
+
+\subsection{Ari}
+The winner of world GGP competition in 2009 and 2010.
+
+It's GDL reasoner translates the description to Prolog and it's game planner is based on \gls{MCTS} with \gls{UCT} without other notable additions.
+
+Created by Jean Méhat (Paris 8 University).
+
+
+\subsection{FluxPlayer}
+
+The winner of world GGP competition in 2006, it has an heuristic-based planner that uses non-uniform iterative deepening depth-first search with Alpha-Beta pruning. It's heuristics use fuzzy logic to determine how close to terminal a certain state is and also try to identify game structure by automated analysis of game specifications.
+The GDL reasoner translates the description to Prolog.
+
+It uses a mixture of Prolog and Flux, a language designed to write AI agents that relies on fuzzy logic.
+
+Created by Stephan Schiffel and Michael Thielscher (Dresden University of Technology).
+
+\subsection{Random}
+A very simple player, included only for the sake of comparison, it evaluates what actions are legal for each turn and chooses one at random.
+
+
+
+
+%
+%Fuzzy logic is a form of logic that allows multiple different values beyond True or False, and also allows overlap between these values. For example: water can be considered cold, warm or hot, but also warm and hot at the same time, since for some temperatures it is not clear which one is the correct one. Fuzzy logic also allows each of these states to have varying degrees of certainty: the water can be 80\% warm and 10\% cold, allowing conditions like if water is very warm: add some cold water, where the very keyword is also part of the fuzzy logic implementation.
+%
 
 \section{Comparison}
 
-UPDATE THIS
+As can be seen in table \ref{table:Players}, as well as on \cite{Swiechowski2015}, the State of the Art solutions for \gls{GGP} use \gls{MCTS} with \gls{UCT} for game planning and Propositional Networks for GDL reasoning. Furthermore, the current top players also do some rule analysis to determine game patterns and factorization opportunities, which helps reduce the search space and improves the search itself by the use of heuristics.
 
-While in the early years of the competition there was a bigger focus on intelligent heuristics, Monte Carlo Tree Search (MCTS) has dominated the competition ever since, since it’s domain independent (general), easy to parallelize and has shown better performance in most of the tested games. One of the most important features of MCTS is that the process of building the tree can be paused when necessary (for example when a turn ends) and continued at a later time. This allows a player to continue the simulations throughout the whole game, without restarting after each turn.
-The variant of MCTS commonly used in GGP is called Upper Confidence Bounds Applied for Trees (UCT), which provides a simple method to balance tree exploration (search new branches) and exploitation (search deeper in the known branches).
+On the hardware side it should be noticed that while players are already leveraging multi-core processors to improve parallelism, no distributed systems or CPU+FPGA hybrids have yet been created.
+

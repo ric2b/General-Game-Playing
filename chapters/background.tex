@@ -134,13 +134,19 @@ A very useful service is provided by ggp.org, the Tiltyard game server (tiltyard
 
 The Agon rating system computes a skill rating for each player, and a difficulty rating for each role in each game, based on historical match data. This system is based on the Elo rating system for Chess, expanding it in ways that are important for GGP: support for single-player games, many-player games, asymmetric games, cross-game skill ratings, and so on.
 
-For a more detailed understanding of how Agon Skill is calculated, see appendix \ref{appendix:AgonSkill}
+For a more detailed understanding of how Agon Skill is calculated, see appendix \ref{appendix:AgonSkill}. 
 
 
 \section{Reasoner Techniques}
 A \gls{GDL} description by itself isn't sufficient to know what actions are possible at each game state, such features must be deduced from the game rules.
 There are two main ways of dealing with this:
-Interpreting the rules whenever necessary or converting the game rules to an efficient data structure. The first solution is generally simpler to implement but has sub-par performance. There are, of course, various possible data structures to store the game rules, only one is explored here, \textit{propositional networks}, as it has become very popular in recent works.
+Interpreting the rules whenever necessary or converting the game rules to an efficient data structure. The first solution is generally simpler to implement but has sub-par performance. There are, of course, various possible data structures to store the game rules. \textit{Propositional Networks} are currently the most promising ones and have become quite popular in recent works.
+
+
+\subsection{Prolog Interpreters/Provers}
+
+Since \gls{GDL} is a variant of Datalog, which is itself a syntactical subset of Prolog, it's fairly simple to translate GDL rules into Prolog data, which can then be inserted into a Prolog Environment to allow queries from the game planner.
+This approach is used mostly for it's simplicity in implementation, since it doesn't analyze (or simplify the analysis of) the game rules.
 
 
 \subsection{Propositional networks}
@@ -181,58 +187,6 @@ A simple example of a propositional network can be seen in \ref{fig:propnets exa
 
 Some of the most widely used techniques for game planners are summarized bellow. Note that several of the top players actually use more than one technique, for example using an heuristic based approach for single player games, where the player is in charge of all actions.
 
-
-\subsection{Monte Carlo Tree Search}
-Introduced to the GGP competition by CADIA player in 2007, \gls{MCTS} is currently the most used and successful method in GGP. Starting from the current state, the algorithm traverses the tree until the move timer ends, doing as many iterations as possible.
-
-Each iteration has four steps: selection, expansion, simulation and back propagation:
-
-\begin{enumerate}
-
-\item Selection: Some technique is used to select which already traversed node to start from for a search. The most common technique is Upper Confidence Bounds applied for Trees (UCT), described in section \ref{sssec:UCT}.
-
-\item Expansion: Adding a node with the first unvisited state yet to the tree, meaning a state that wasn’t already in the tree.
-
-\item Simulation: Perform a random simulation until a terminal game state is reached.
-
-\item Back-Propagation: The scores obtained by all players at the end of the simulation are back-propagated to all nodes traveled in the selection and expansion stages. This is how the rewards of non-terminal states is computed.
-
-\end{enumerate}
-
-The success of MCTS can be mostly attributed to it not requiring any game-specific knowledge, although this can become a problem if other techniques like heuristics become advanced enough at learning important features of games, as heuristic search can be much faster than simulation. MCTS also has the advantage of parallelizing well. The biggest problems for MCTS are games that can have infinite moves without ending and tree size.
-
-There have been several suggested improvements to the basic MCTS, although most aren’t very thoroughly tested yet. One of the most interesting ones is Simulation Heuristics, proposed by MINI-Player, which aims to add some sort of learning to the standard MCTS algorithm. The heuristics proposed are very light-weight and are the following:
-
-\begin{itemize}
-
-\item Random: The standard MCTS
-
-\item History Heuristic: Tries to identify globally good actions (generally good regardless of state)
-
-\item Mobility: Favors actions that lead to states with more move options relatively to other players.
-
-\item Approximate Goal Evaluation: Tries to calculate the degree of satisfaction of a GDL goal rule.
-
-\item Exploration: Measures the difference between states as a way to do a diverse exploration.
-
-\item Statistical Symbol Counting: Before the start clock simulations are done to calculate the correlation between game score and certain game symbols (moves, pieces, board locations, etc). Symbols that do not change much are then ignored to allow more computation to be made on the more relevant ones.
-
-\end{itemize}
-
-\subsubsection{UCT}
-\label{sssec:UCT}
-
-Upper Confidence Bounds applied for Trees (UCT) is a way of selecting what node should be searched next and it's widely used for the \textit{Selection} stage of \gls{MCTS}. It uses a constant that can be tweaked to favor more or less exploration of non visited branches. The UCT algorithm is described by \ref{UCT}:
-
-\begin{center}
-\begin{equation} \label{UCT}
-a^{*} = arg \max_{a\in A(s)} \left \{ Q(s,a) + C \sqrt{\frac{\ln|N(s)|} {N(s,a)}} \right \}
-\end{equation}
-\end{center}
-
-Where $a^{*}$ is the selected node, $a \in A(s)$ means an action that contained in the set of possible actions in the current state $s$, $Q(s,a)$ is an assessment of performing $a$ in state $s$, $C$ is the exploration ratio constant, $N(s)$ is the number of previous visits to state $s$ and $N(s,a)$ is the number of times $a$ has been sampled in state $s$.
-
-\subsubsection{RAVE}
 
 \subsection{Heuristic based techniques}
 Heuristics are methods that simplify or accelerate problem solving by not guaranteeing optimal solutions but satisfying approximations. Heuristics can be very useful whenever finding an optimal solution is impossible or impractical.
@@ -279,6 +233,77 @@ This allows for the pruning of many irrelevant sub-trees by simply storing a low
     \label{fig:alpha_beta}
 \end{figure}
 
+\subsubsection{Iterative deepening depth-first search}
+
+\gls{IDDFS} is a technique for more dynamic game tree searches, it raises the depth limit iteratively while a goal state isn't found. The depth can be controlled by a cost function and it can be different for each branch, called \textit{non-uniform depth-first search}, which has the added benefit of prioritizing the branches that seem most valuable.
+This technique increases the depth to which the game tree is searched, especially with big branching-factors, increasing the likelihood of finding terminal states.
+
+
+\subsection{Monte Carlo Tree Search}
+Introduced to the GGP competition by CADIA player in 2007 \cite{Finnsson2007}, \gls{MCTS} is currently the most used and successful method in GGP. Starting from the current state, the algorithm traverses the tree until the move timer ends, doing as many iterations as possible.
+
+
+The main advantages of MCTS are:
+
+\begin{itemize}
+
+\item It parallelizes well, as opposed to techniques like Alpha-Beta pruning
+
+\item It's domain independent, the creation of heuristics is optional
+
+\item It can be interrupted and resumed as needed, without spending time on restarting the simulations. This is very useful because of the time limits for each turn
+
+\end{itemize}
+
+One of the main issues of \gls{MCTS}, however, is that simulations are more time consuming than heuristic based-methods, although this is attenuated by the parallization.
+
+Each iteration has four steps: selection, expansion, simulation and back propagation:
+
+\begin{enumerate}
+
+\item Selection: Some technique is used to select which already traversed node to start from for a search. The most common technique is Upper Confidence Bounds applied for Trees (UCT), described in section \ref{sssec:UCT}.
+
+\item Expansion: Adding a node with the first unvisited state yet to the tree, meaning a state that wasn’t already in the tree.
+
+\item Simulation: Perform a random simulation until a terminal game state is reached.
+
+\item Back-Propagation: The scores obtained by all players at the end of the simulation are back-propagated to all nodes traveled in the selection and expansion stages. This is how the rewards of non-terminal states is computed.
+
+\end{enumerate}
+
+
+\subsubsection{UCT}
+\label{sssec:UCT}
+
+Upper Confidence Bounds applied for Trees (UCT) is a way of selecting what node should be searched next and it's widely used for the \textit{Selection} stage of \gls{MCTS}. It uses a constant that can be tweaked to favor more or less exploration of non visited branches. The UCT algorithm is described by \ref{UCT}:
+
+\begin{center}
+\begin{equation} \label{UCT}
+a^{*} = arg \max_{a\in A(s)} \left \{ Q(s,a) + C \sqrt{\frac{\ln|N(s)|} {N(s,a)}} \right \}
+\end{equation}
+\end{center}
+
+Where $a^{*}$ is the selected node, $a \in A(s)$ means an action that contained in the set of possible actions in the current state $s$, $Q(s,a)$ is an assessment of performing $a$ in state $s$, $C$ is the exploration ratio constant, $N(s)$ is the number of previous visits to state $s$ and $N(s,a)$ is the number of times $a$ has been sampled in state $s$.
+
+
+\subsubsection{Heuristics in MCTS}
+There have been several suggested improvements to the basic MCTS. One of the most interesting ones is Simulation Heuristics, proposed by MINI-Player \cite{Swiechowski2014}, which aims to add some form of learning to the standard MCTS algorithm. The heuristics proposed are very light-weight and are the following:
+
+\begin{itemize}
+
+\item Random: The standard MCTS
+
+\item History Heuristic: Tries to identify globally good actions (generally good regardless of state)
+
+\item Mobility: Favors actions that lead to states with more move options relatively to other players
+
+\item Approximate Goal Evaluation: Tries to calculate the degree of satisfaction of a GDL goal rule
+
+\item Exploration: Measures the difference between states as a way to do a diverse exploration
+
+\item Statistical Symbol Counting: Before the start clock simulations are done to calculate the correlation between game score and certain game symbols (moves, pieces, board locations, etc). Symbols that do not change much are then ignored to allow more computation to be made on the more relevant ones
+
+\end{itemize}
 
 %\subsubsection{FluxPlayer}
 %The winner of the second GGP competition, in 2006, this player used fuzzy logic to determine how close to terminal a certain state is.
