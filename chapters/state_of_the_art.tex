@@ -193,5 +193,9 @@ A very simple player, included only for the sake of comparison, it evaluates wha
 
 As can be seen in table \ref{table:Players}, as well as on \cite{Swiechowski2015}, the State of the Art solutions for \gls{GGP} use \gls{MCTS} with \gls{UCT} for game planning and Propositional Networks for GDL reasoning. Furthermore, the current top players also do some rule analysis to determine game patterns and factorization opportunities, which helps reduce the search space and improves the search itself by the use of heuristics.
 
-On the hardware side it should be noticed that while players are already leveraging multi-core processors to improve parallelism, no distributed systems or CPU+FPGA hybrids have yet been created.
+For GDL Reasoners, the use of Propositional Networks naturally leads to a performance improvement over the more common use of translations to Prolog and the use of Prolog interpreters: Although more complex to implement, Propositional Networks allow for simpler rule and pattern analysis and can also compute next states in a more efficient way, because they encode in it's structure the dependencies of each state variable, unlike a simple translation of the rules.
 
+As far as game planners, although it's quite clear that \gls{MCTS} with \gls{UCT} is currently the solution with the best performance over the various attempts at using Heuristic based planners, it's not clear that it will stay that way.
+Heuristic based search can be much faster at searching the game tree than \gls{MCTS} but it's effectiveness is completely dependent on the quality of the heuristics used and so can improve drastically as better heuristics (or run-time generation of heuristics) are created. Even so, there have been multiple solutions, like Sancho, that improve \gls{MCTS} + \gls{UCT} with various heuristics or heuristic generation, so heuristic improvements can benefit both techniques.
+
+On the hardware side it should be noticed that while players are already leveraging the parallel capabilities of multi-core processors, no distributed systems or CPU+FPGA hybrids seem to have been created.

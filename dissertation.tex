@@ -15,7 +15,7 @@
 \usepackage{graphicx, helvet, hyperref, setspace}
 \usepackage{epstopdf}
 \usepackage[portuguese,english]{babel}
-\usepackage[nomain, acronym, toc]{glossaries}
+\usepackage[acronym, toc, nonumberlist]{glossaries}
 \input{extra_stuff.tex}
 
 % Built the glossary when the main file is built.
@@ -74,7 +74,7 @@
 % Table of contents
 \tableofcontents
 % A new page is necessary only if table of contents has an odd number of pages
-\NewPage
+%\NewPage
 
 % List of tables
 \addcontentsline{toc}{chapter}{\listtablename}
@@ -89,7 +89,7 @@
 \NewPage
 
 % List of acronyms
-\printglossary[type=\acronymtype]
+%\printglossary[type=\acronymtype]
 
 \pagenumbering{arabic}% Arabic page numbers (and reset to 1)
 
@@ -109,14 +109,15 @@
 
 \bibliography{bibliography/dissertation}
 
+% Glossary and Acronym List
+\if\includeGlossary 1
+%\printglossary[type=\glsdefaulttype]
+\printglossaries
+\fi
+
 % Appendix
 \appendix
 \input{appendix/main.tex}
-
-% Glossary and Acronym List
-\if\includeGlossary 1
-\printglossary
-\fi
 
 % Back Cover
 \pagenumbering{gobble}
