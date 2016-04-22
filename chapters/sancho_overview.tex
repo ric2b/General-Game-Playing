@@ -32,10 +32,55 @@ The main drawback is making back-propagation more complicated to implement.
 
 
 \section{Meta-Gaming}
-\todo[inline]{isto}
+Before a match actually starts players have a time period to prepare themselves, lasting about 3 to 4 times the length of a normal turn. This is called the Meta-Gaming time and can be used not just for initialization but also to do game analysis and other optimizations.
+
+Sancho does the following types of analysis during Meta-Gaming: 
+\begin{itemize}
+	\item Static dependency analysis: the distances between propositions are evaluated (how many transitions are between proposition A and proposition B). This can be useful to create "close-to-goal" heuristic or to choose the UCT's exploration coefficient. 
+	
+	\item Factorization: Identifying composite games or similar factorization opportunities. This is usually done by identifying a goal that is OR condition of other "semi-goals" which can thus be factored into multiple Propositional Networks, each with one of these "semi-goals".	
+	
+	 
+\end{itemize}
+
+\subsection{Statistics gathering}
+\todo[inline]{more detail}
+These statistics are mainly:
+\begin{itemize}
+	\item Distribution of game length
+	
+	\item Average branching factor
+	
+	\item Presence of simultaneous moves (this can also be done statically)
+	
+	\item How effective greedy playouts are
+	
+	\item Correlation of candidate heuristic signals and outcomes
+\end{itemize}
+
+\todo[inline]{more detail}
+
 
 \section{Heuristics}
-\todo[inline]{isto}
+Sancho uses heuristics to improve the convergence time of MCTS. They are used when first expanding a node, to initialize it with a meaningful score. For example, heuristics that might reflect piece counts, piece captures or numeric quantities can be very useful in many games. Nodes keep track of how many simulations have been done so that score confidence can be taken into account. 
+
+Heuristics should be dynamically generated for the game being played so that the player can adapt to any game, although pre-made heuristics can also be used as long as there is a process to disable them when not suitable.
+
+
+\subsection{Generation of candidate Heuristics}
+Static analysis is used to generate \textit{possible} heuristics, with no regard for whether they are actually useful at all, for now. At this point the requirements are that they should be calculable given a state or move (moves are bit hard to define, this will be touched in more detail later) and should cheap to compute.
+
+
+\subsection{Crystalization of Heuristics}
+After generating heuristics several game thousands of random game simulations are done to gather statistics about the game and on the performance of candidate heuristics, so they can be weighted or completely disabled based on the results. They are then used  on the expansion phase of MCTS to initialize the node with a weighted average heuristic value.
+
+
+\subsection{Move Heuristics}
+Move heuristics are harder to derive since in most games moves aren't intrinsically good or bad, without the context of state. 
+Similarity of states isn't well defined, Sancho's definition is that a small number of difference in propositions values means similarity. 
+It uses locality sensitive hash techniques are used to create \textit{buckets} of similar states.
+The move heuristic will then have a value for each \textit{bucket} and when doing node expansion the heuristic value for the state's bucket is evaluated.
+
 
 \section{Propositional Networks Implementation}
 
@@ -88,9 +133,9 @@ Sancho, being based on GGP-base, spawns several threads from the framework itsel
 An overview of the relevant thread structure can be seen in figure \ref{fig:sancho_overview}. There are only 2 important types of threads: the MCTS structure control thread and the Playout threads.
 
 The MCTS structure control is in charge of 3 of the 4 MCTS steps (figure \ref{fig:mcts steps}), all except simulation, which is the task of the playout threads.
-Essentially the MCTS thread keeps traversing the graph selecting nodes based on a version of UCT (\ref{UCT}), expanding them (the score is initialized based on the active heuristics) and adding them to the simulation queue. After it gets the results from the playout threads the new information is back-propagated through the current move sequence.
+Essentially the MCTS thread traverses the graph selecting nodes based on a version of UCT (\ref{UCT}), expanding them (the score is initialized based on the active heuristics) and adding them to the simulation queue. After it gets the results from the playout threads the new information is back-propagated through the current move sequence.
 
-
+Playout threads get tasks from the simulation queue and use the PropNet structure to make playout simulations. In Sancho these playouts can either be random or greedy. Greedy playouts perform 1-level deep lookaheads and choose immediate wins and avoid immediate losses, they can be very useful in some games but are also quite expensive so they are only used if the Meta-Gaming analysis concludes that they are a net benefit for the current game. Each of these threads keeps their own version of the game state to avoid the need for locking. Playout threads are actually much faster than the MCTS thread so they usually do multiple playouts from the same node and return the average result.
 
 \begin{figure}[h]
 	\centering
