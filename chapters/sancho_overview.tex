@@ -32,8 +32,10 @@ The main drawback is making back-propagation more complicated to implement.
 
 
 \section{Meta-Gaming}
+\todo[inline]{isto}
 
 \section{Heuristics}
+\todo[inline]{isto}
 
 \section{Propositional Networks Implementation}
 
@@ -81,9 +83,23 @@ After the initial GDL to PropNet translation is done Sancho tries several method
 \end{itemize}
 
 
+\section{Multi-Threading}
+Sancho, being based on GGP-base, spawns several threads from the framework itself that aren't relevant to it's performance, like the HTTP server or the GUI.
+An overview of the relevant thread structure can be seen in figure \ref{fig:sancho_overview}. There are only 2 important types of threads: the MCTS structure control thread and the Playout threads.
+
+The MCTS structure control is in charge of 3 of the 4 MCTS steps (figure \ref{fig:mcts steps}), all except simulation, which is the task of the playout threads.
+Essentially the MCTS thread keeps traversing the graph selecting nodes based on a version of UCT (\ref{UCT}), expanding them (the score is initialized based on the active heuristics) and adding them to the simulation queue. After it gets the results from the playout threads the new information is back-propagated through the current move sequence.
+
+
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.75\textwidth]{images/Sancho_overview.pdf}
+	\caption{Sancho threading overview}
+	\label{fig:sancho_overview}
+\end{figure}
 
 \section{1-player games (puzzles) solving}
-
-
+\todo[inline]{isto}
 
 
