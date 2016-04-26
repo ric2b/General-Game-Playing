@@ -9,14 +9,23 @@ A more up to date and detailed overview of the Sancho project is given in this c
 
 Sancho is based on the ggp-base framework.
 It spawns many different threads but there are only 3 important types:
+
 \begin{itemize}
 	\item 1 HTTP server thread: Responsible for network communication with the game manager.
 	\item 1 MCTS structure control thread: Handles all MCTS steps except simulation. It's the only thread that can modify the MCTS graph.
 	\item N Playout threads: These threads handle simulations (random playouts).    
 \end{itemize}
-	
-\todo[inline]{make diagram}
-	
+
+Some other threads are spawned by the ggp-framework itself, like the GUI thread, but aren't important to Sancho's performance.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.6\textwidth]{images/Sancho_overview.pdf}
+	\caption{Sancho threading overview}
+	\label{fig:sancho_overview}
+\end{figure}
+
+
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=\textwidth]{images/MCTS.pdf}
@@ -111,7 +120,7 @@ Note: During the creation and optimization process of the propnet Sancho actuall
 	\label{fig:propnet_structure}
 \end{figure}
 
-\subsection{Further optimizations}
+\subsection{Implementation optimizations}
 After the initial GDL to PropNet translation is done Sancho tries several methods of improving the performance of the network:
 \begin{itemize}
 	\item Several techniques are used to try to reduce the number of components, like doing associative, distributive and DeMorgan's transformations and removal of redundant components (like two NOT gates in series) and duplicate components.
@@ -127,6 +136,19 @@ After the initial GDL to PropNet translation is done Sancho tries several method
 	
 \end{itemize}
 
+A note on moving control logic out of the PropNet: It can also allow for game approximation, a technique where the player deliberately simplifies the goal value calculation in a lossy way, effectively playing a different but simpler and similar game.
+
+\iffalse
+\begin{itemize}
+	\item Game is win/draw/loss based on who holds the biggest number of a certain set of base propositions
+	
+	\item Game is win/draw/loss 
+	
+	\item Goal value is based on the number of some set of base propositions that are set to true
+	
+	\item Like any of the above but where the count is represented by a succession of counting propositions
+\end{itemize}
+\fi
 
 \section{Multi-Threading}
 Sancho, being based on GGP-base, spawns several threads from the framework itself that aren't relevant to it's performance, like the HTTP server or the GUI.
@@ -135,16 +157,42 @@ An overview of the relevant thread structure can be seen in figure \ref{fig:sanc
 The MCTS structure control is in charge of 3 of the 4 MCTS steps (figure \ref{fig:mcts steps}), all except simulation, which is the task of the playout threads.
 Essentially the MCTS thread traverses the graph selecting nodes based on a version of UCT (\ref{UCT}), expanding them (the score is initialized based on the active heuristics) and adding them to the simulation queue. After it gets the results from the playout threads the new information is back-propagated through the current move sequence.
 
-Playout threads get tasks from the simulation queue and use the PropNet structure to make playout simulations. In Sancho these playouts can either be random or greedy. Greedy playouts perform 1-level deep lookaheads and choose immediate wins and avoid immediate losses, they can be very useful in some games but are also quite expensive so they are only used if the Meta-Gaming analysis concludes that they are a net benefit for the current game. Each of these threads keeps their own version of the game state to avoid the need for locking. Playout threads are actually much faster than the MCTS thread so they usually do multiple playouts from the same node and return the average result.
+Playout threads get tasks from the simulation queue and use the PropNet structure to make playout simulations. In Sancho these playouts can either be random or greedy. Greedy playouts perform 1-level deep lookahead and choose immediate wins and avoid immediate losses, they can be very useful in some games but are also quite expensive so they are only used if the Meta-Gaming analysis concludes that they are a net benefit for the current game. Each of these threads keeps their own version of the game state to avoid the need for locking. Playout threads are actually much faster than the MCTS thread so they usually do multiple playouts from the same node and return the average result.
 
-\begin{figure}[h]
-	\centering
-	\includegraphics[width=0.75\textwidth]{images/Sancho_overview.pdf}
-	\caption{Sancho threading overview}
-	\label{fig:sancho_overview}
-\end{figure}
+
+\section{Search optimizations}
+
+\section{Latch Detection}
+Latches are propositions that once set can never become unset, i.e., when they switch from \textit{False} to \textit{True} they can never change back (or vice-versa). Identifying propositions like this can be very useful in terms of limiting the search space (if it limits the obtainable goals) or in reducing the computational effort of calculating state transitions, since their value can simply be cached and never recalculated.
+
+Sancho does latch detection by PropNet analysis and currently only detects simple cases where a proposition is fed back into itself, making it's next value dependent on the current value, in one of the following ways:
+
+\begin{itemize}
+	\item $A' \leftarrow A$ or $<other conditions>$ (positive latch)
+	\item $A' \leftarrow \bar A$ and $<other conditions>$ (negative latch)
+	\item $B \leftarrow A$ or $<other conditions>$ (positive latch if A is positively latched)
+	\item $B \leftarrow A$ and $<other conditions>$ (negative latch if A is negatively latched)
+\end{itemize}
+
+
+\subsection{Goal Latches}
+Detecting goal latches can lead to further optimizations than simply caching results, since they can give additional information like the new maximum or minimum attainable scores and can thus severely impact the way search is done from then on. It can also be used in conjunction with an heuristic that tries to raise the minimum attainable score and avoids lowering the maximum.
+Latch detection in the way Sancho implements is very cheap and be done at startup, allowing this heuristic to be used on the meta-gaming playouts.
+
+\iffalse
+\section{Local Search}
+Certain games or game features can have a sort of locality, where certain moves only affect some other features of the game within a certain "distance". This is easily visualized in many board games but can happen in more abstract forms. This can possibly allow the player to divide the the game into sections of influence (that can still affect each other, unlike factorized games).
+
+A distance heuristic can be statistically determined and then moves in a sphere of influence can be calculated based on this. 
+\fi
+
+
 
 \section{1-player games (puzzles) solving}
-\todo[inline]{isto}
 
+When Sancho plays single player games, or puzzles, it tries to use different methods to decide its strategy, since it can control the whole game and thus only needs to find a single path to it's target state (the state that finishes the game with the best possible score).
+First an attempt at identifying a target state and back-tracing to the root to find the path. This is often impractical because a game might have many target states, most of them unreachable from the starting game state (sudoku, for example) or most paths might simply be too long.
+
+If an admissible path-finding heuristic (one that never over-estimates the real cost of reaching the goal) can be found, A* can be used to attempt finding the optimal path to a target state. The heuristic used by Sancho for A* is Hamming distance (the distance between states is computed as the number of different proposition values).
+The factorization of control logic out of the main PropNet can really help performance when using path-finding algorithms.
 
