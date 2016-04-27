@@ -3,16 +3,14 @@
 \chapter{Sancho Overview}
 \label{chapter:sancho_overview}
 
-A more up to date and detailed overview of the Sancho project is given in this chapter
-
 \section{The overall architecture}
 
 Sancho is based on the ggp-base framework, which includes an interpreter for GDL descriptions, a basic propositional network constructor among a few other things. Some of these components are heavily modified in Sancho.
-It spawns many different threads but there are only 3 important types:
+It spawns many different threads but there are only 3 important types (a diagram can be seen in figure \ref{fig:sancho_overview}):
 
 \begin{itemize}
 	\item 1 HTTP server thread: Responsible for network communication with the game manager.
-	\item 1 MCTS structure control thread: Handles all MCTS steps except simulation. It's the only thread that can modify the MCTS graph.
+	\item 1 MCTS structure control thread: Handles all MCTS steps (figure \ref{fig:mcts steps}) except simulation. It's the only thread that can modify the MCTS graph.
 	\item N Playout threads: These threads handle simulations (random playouts).    
 \end{itemize}
 
@@ -20,24 +18,20 @@ Some other threads are spawned by the ggp-framework itself, like the GUI thread,
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=0.6\textwidth]{images/Sancho_overview.pdf}
+	\includegraphics[width=0.5\textwidth]{images/Sancho_overview.pdf}
 	\caption{Sancho threading overview}
 	\label{fig:sancho_overview}
 \end{figure}
 
+\newpage
 
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=\textwidth]{images/MCTS.pdf}
-%	\includegraphics[width=\textwidth]{images/MCTS.png}
+	%	\includegraphics[width=\textwidth]{images/MCTS.png}
 	\caption{MCTS steps}
 	\label{fig:mcts steps}
 \end{figure}
-
-\section{MCTS data structure}
-MCTS is usually done on a tree structure but Sancho uses a Directed Graph to represent the game states and transitions, allowing for each state to be represented only once, regardless of the path taken to reach it.
-This has two main advantages: the values for each state can be drastically more accurate by averaging the scores from different paths and it can also save on memory.
-The main drawback is making back-propagation more complicated to implement.
 
 
 \section{Meta-Gaming}
@@ -66,6 +60,14 @@ A large part of Sancho's Meta-gaming time is used to gather statistics about the
 	\item How fast are simulations (to set the sample size of each simulation step)
 \end{itemize}
 
+\newpage
+
+\section{MCTS data structure}
+MCTS is usually done on a tree structure but Sancho uses a Directed Graph to represent the game states and transitions, allowing for each state to be represented only once, regardless of the path taken to reach it.
+This has two main advantages: the values for each state can be drastically more accurate by averaging the scores from different paths and it can also save on memory.
+The main drawback is making back-propagation more complicated to implement.
+
+
 \section{Heuristics}
 Sancho uses heuristics to improve the convergence time of MCTS. They are used when first expanding a node, to initialize it with a meaningful score. For example, heuristics that might reflect piece counts, piece captures or numeric quantities can be very useful in many games. Nodes keep track of how many simulations have been done so that score confidence can be taken into account. 
 
@@ -77,7 +79,7 @@ Static analysis is used to generate \textit{possible} heuristics, with no regard
 
 
 \subsection{Crystalization of Heuristics}
-After generating heuristics several game thousands of random game simulations are done to gather statistics about the game and on the performance of candidate heuristics, so they can be weighted or completely disabled based on the results. They are then used  on the expansion phase of MCTS to initialize the node with a weighted average heuristic value.
+After generating heuristics several thousands of random game simulations are done to gather statistics about the game and on the performance of candidate heuristics, so they can be weighted or completely disabled based on the results. They are then used  on the expansion phase of MCTS to initialize the node with a weighted average heuristic value.
 
 
 \subsection{Move Heuristics}
@@ -117,7 +119,7 @@ Note: During the creation and optimization process of the propnet Sancho actuall
 	\label{fig:propnet_structure}
 \end{figure}
 
-\subsection{Implementation optimizations}
+\subsection{Implementation}
 After the initial GDL to PropNet translation is done Sancho tries several methods of improving the performance of the network:
 \begin{itemize}
 	\item All constants are represented by only 2 components (one for \textit{True} and one for \textit{False}) instead of spawning their own.	
@@ -149,7 +151,7 @@ A note on moving control logic out of the PropNet: It can also allow for game ap
 \end{itemize}
 \fi
 
-\section{Multi-Threading}
+\section{Parallelism}
 Sancho, being based on GGP-base, spawns several threads from the framework itself that aren't relevant to it's performance, like the HTTP server or the GUI.
 An overview of the relevant thread structure can be seen in figure \ref{fig:sancho_overview}. There are only 2 important types of threads: the MCTS structure control thread and the Playout threads.
 
@@ -161,7 +163,7 @@ Playout threads get tasks from the simulation queue and use the PropNet structur
 
 \section{Search optimizations}
 
-\section{Latch Detection}
+\subsection{Latch Detection}
 Latches are propositions that once set can never become unset, i.e., when they switch from \textit{False} to \textit{True} they can never change back (or vice-versa). Identifying propositions like this can be very useful in terms of limiting the search space (if it limits the obtainable goals) or in reducing the computational effort of calculating state transitions, since their value can simply be cached and never recalculated.
 
 Sancho does latch detection by PropNet analysis and currently only detects simple cases where a proposition is fed back into itself, making it's next value dependent on the current value, in one of the following ways:
@@ -174,19 +176,19 @@ Sancho does latch detection by PropNet analysis and currently only detects simpl
 \end{itemize}
 
 
-\subsection{Goal Latches}
+\subsubsection{Goal Latches}
 Detecting goal latches can lead to further optimizations than simply caching results, since they can give additional information like the new maximum or minimum attainable scores and can thus severely impact the way search is done from then on. It can also be used in conjunction with an heuristic that tries to raise the minimum attainable score and avoids lowering the maximum.
 Latch detection in the way Sancho implements is very cheap and be done at startup, allowing this heuristic to be used on the meta-gaming playouts.
 
 \iffalse
-\section{Local Search}
+\subsection{Local Search}
 Certain games or game features can have a sort of locality, where certain moves only affect some other features of the game within a certain "distance". This is easily visualized in many board games but can happen in more abstract forms. This can possibly allow the player to divide the the game into sections of influence (that can still affect each other, unlike factorized games).
 
 A distance heuristic can be statistically determined and then moves in a sphere of influence can be calculated based on this. 
 \fi
 
 
-\section{1-player games (puzzles) solving}
+\subsection{1-player games (puzzles) solving}
 
 When Sancho plays single player games, or puzzles, it tries to use different methods to decide its strategy, since it can control the whole game and thus only needs to find a single path to it's target state (the state that finishes the game with the best possible score).
 First an attempt at identifying a target state and back-tracing to the root to find the path. This is often impractical because a game might have many target states, most of them unreachable from the starting game state (sudoku, for example) or most paths might simply be too long.
