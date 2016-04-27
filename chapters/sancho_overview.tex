@@ -7,7 +7,7 @@ A more up to date and detailed overview of the Sancho project is given in this c
 
 \section{The overall architecture}
 
-Sancho is based on the ggp-base framework.
+Sancho is based on the ggp-base framework, which includes an interpreter for GDL descriptions, a basic propositional network constructor among a few other things. Some of these components are heavily modified in Sancho.
 It spawns many different threads but there are only 3 important types:
 
 \begin{itemize}
@@ -47,28 +47,24 @@ Sancho does the following types of analysis during Meta-Gaming:
 \begin{itemize}
 	\item Static dependency analysis: the distances between propositions are evaluated (how many transitions are between proposition A and proposition B). This can be useful to create "close-to-goal" heuristic or to choose the UCT's exploration coefficient. 
 	
-	\item Factorization: Identifying composite games or similar factorization opportunities. This is usually done by identifying a goal that is OR condition of other "semi-goals" which can thus be factored into multiple Propositional Networks, each with one of these "semi-goals".	
+	\item Factorization: Identifying composite games or similar factorization opportunities. This is usually done by identifying a goal that is OR condition of other "semi-goals" which can thus be factored into multiple Propositional Networks, each with one of these "semi-goals".	 
 	
-	 
+	\item Statistical analysis, described in \ref{sssec:statistics_gathering}
 \end{itemize}
 
 \subsection{Statistics gathering}
-\todo[inline]{more detail}
-These statistics are mainly:
+\label{sssec:statistics_gathering}
+A large part of Sancho's Meta-gaming time is used to gather statistics about the game. This is done by simulating many instances of the game, usually completely random or with few improvements, and gathering data about, among others:
+
 \begin{itemize}
 	\item Distribution of game length
-	
 	\item Average branching factor
-	
-	\item Presence of simultaneous moves (this can also be done statically)
-	
-	\item How effective greedy playouts are
-	
+	\item Presence of simultaneous moves
+	\item How effective greedy playouts are and how costly
 	\item Correlation of candidate heuristic signals and outcomes
+	\item Are piece heuristics useful
+	\item How fast are simulations (to set the sample size of each simulation step)
 \end{itemize}
-
-\todo[inline]{more detail}
-
 
 \section{Heuristics}
 Sancho uses heuristics to improve the convergence time of MCTS. They are used when first expanding a node, to initialize it with a meaningful score. For example, heuristics that might reflect piece counts, piece captures or numeric quantities can be very useful in many games. Nodes keep track of how many simulations have been done so that score confidence can be taken into account. 
@@ -95,6 +91,7 @@ The move heuristic will then have a value for each \textit{bucket} and when doin
 
 Propositional Networks (PropNets) are used in Sancho as a faster way of computing state transitions than interpreting GDL. An example was given in  figure \ref{fig:propnets example}.
 GDL can be translated into a PropNet representation since both are first order logic, GGP-base includes a GDL to PropNet converter which Sancho builds on to improve performance.
+
 
 \subsection{Data Representaion}
 \noindent PropNets are represented in a way that enables cheap state updates and queries:
@@ -123,8 +120,10 @@ Note: During the creation and optimization process of the propnet Sancho actuall
 \subsection{Implementation optimizations}
 After the initial GDL to PropNet translation is done Sancho tries several methods of improving the performance of the network:
 \begin{itemize}
-	\item Several techniques are used to try to reduce the number of components, like doing associative, distributive and DeMorgan's transformations and removal of redundant components (like two NOT gates in series) and duplicate components.
+	\item All constants are represented by only 2 components (one for \textit{True} and one for \textit{False}) instead of spawning their own.	
 	
+	\item Several techniques are used to try to reduce the number of components, like doing associative, distributive and DeMorgan's transformations and removal of redundant components (like two NOT gates in series) and duplicate components. 
+
 	\item Moving goal score calculation to a separate network since it's only relevant on terminal states, so it's ok to calculate it's values from scratch when needed (by querying the current values of the main network) because it's rarely needed.
 	
 	\item Whenever a component changes value it forces a recalculation on all components that it outputs to,  initiating a forward-propagated update of the PropNet.
@@ -185,7 +184,6 @@ Certain games or game features can have a sort of locality, where certain moves 
 
 A distance heuristic can be statistically determined and then moves in a sphere of influence can be calculated based on this. 
 \fi
-
 
 
 \section{1-player games (puzzles) solving}
